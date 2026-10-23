@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PlanejaInclusão</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{--bg:#f4f1ff;--surf:#fff;--ink:#241f4d;--mut:#5a5784;--line:#e3ddfa;--g:#5b3fc4;--gt:#ece6ff;--b:#2f6fd8;--bt:#dfeaff;--l:#8a4fd8;--lt:#efe4ff;--warn:#7a5200;--wt:#fff3d1;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#16122e;--surf:#211b45;--ink:#eeeaff;--mut:#bdb7e6;--line:#3a3270;--g:#a99bff;--gt:#2e2764;--b:#8db4ff;--bt:#1f2f5c;--l:#c9a6ff;--lt:#35276a;--warn:#f0c872;--wt:#3a2f14}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#16122e;--surf:#211b45;--ink:#eeeaff;--mut:#bdb7e6;--line:#3a3270;--g:#a99bff;--gt:#2e2764;--b:#8db4ff;--bt:#1f2f5c;--l:#c9a6ff;--lt:#35276a;--warn:#f0c872;--wt:#3a2f14}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 "Atkinson Hyperlegible",system-ui,sans-serif}
+h1,h2,h3{font-family:Lexend,system-ui,sans-serif;line-height:1.25;margin:0 0 .5em;font-weight:600}
+h1{font-size:clamp(1.8rem,5vw,2.6rem)}h2{font-size:1.4rem}h3{font-size:1.1rem}
+p{margin:0 0 .8em;max-width:70ch}
+:focus-visible{outline:3px solid var(--b);outline-offset:2px}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px}
+main{padding:24px 0 40px}
+.view{display:none}.view.active{display:block}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+.hero{background:linear-gradient(135deg,var(--gt),var(--bt) 55%,var(--lt));border-radius:20px;padding:28px 22px;margin-bottom:18px}
+.hero p{font-size:1.08rem}
+.paths{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:18px}
+.path{text-align:left;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:14px;font:inherit;color:var(--ink);cursor:pointer}
+.path strong{display:block;font-family:Lexend,sans-serif;margin-bottom:4px}
+.path span{font-size:.92rem;color:var(--mut)}
+.path:hover{border-color:var(--g)}
+.note{background:var(--wt);color:var(--ink);border-left:5px solid var(--warn);border-radius:8px;padding:12px 14px;margin:0 0 16px;font-size:.95rem}
+form{display:grid;gap:14px}
+.row{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+label{display:block;font-weight:700;font-size:.95rem;margin-bottom:4px}
+.hint{font-weight:400;color:var(--mut);font-size:.88rem}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--surf);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+textarea{min-height:84px;resize:vertical}
+.btn{font:inherit;font-weight:700;border:0;border-radius:10px;padding:11px 18px;min-height:44px;cursor:pointer;background:var(--g);color:#fff}
+:root[data-theme="dark"] .btn{color:#0c1a15}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#0c1a15}}
+.btn.alt{background:var(--lt);color:var(--ink);border:1px solid var(--line)}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.sec{border-top:3px solid var(--g);padding-top:10px;margin-top:20px}
+.sec:nth-of-type(3n+2){border-color:var(--b)}.sec:nth-of-type(3n){border-color:var(--l)}
+.sec h3{margin-bottom:.3em}
+ul,ol{margin:.3em 0 .8em;padding-left:1.3em}li{margin-bottom:.3em}
+.tag{display:inline-block;font-size:.82rem;font-weight:700;padding:2px 10px;border-radius:999px;margin-right:6px}
+.t-lei{background:var(--bt);color:var(--b)}.t-ped{background:var(--lt);color:var(--l)}.t-conf{background:var(--wt);color:var(--warn)}
+.fund{border-left:5px solid var(--l)}
+.fund.lei{border-left-color:var(--b)}
+.ph{border:2px dashed var(--line);border-radius:10px;min-height:96px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--mut);font-size:.9rem;padding:8px;margin:8px 0}
+.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+pre{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;font:.88rem/1.5 "Atkinson Hyperlegible",monospace;margin:6px 0}
+.empty{color:var(--mut)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.toast.on{opacity:1}
+footer{border-top:1px solid var(--line);padding:16px 0 28px;color:var(--mut);font-size:.9rem}
+@media print{body{background:#fff;color:#000;font-size:12pt}.app-chrome,.noprint,footer,.toast{display:none!important}.view{display:none!important}.view.active{display:block!important}.card,.hero{border:1px solid #999;background:#fff;break-inside:avoid}}
+.folhawrap{overflow:hidden}
+.folha{width:794px;min-height:1123px;margin:0 auto;padding:44px 50px;background:#fff;color:#1b1b1b;font:16px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif;box-shadow:0 2px 14px rgba(0,0,0,.3);border-radius:4px}
+.folha.dys{font:18px/1.95 Lexend,"Atkinson Hyperlegible",sans-serif;letter-spacing:.03em;word-spacing:.12em}
+.folha h1{font:600 26px/1.2 Lexend,sans-serif;margin:6px 0 2px;color:#2f6f5a}
+.folha h4{margin:0 0 6px;font:600 17px Lexend,sans-serif}
+.folha p{margin:0 0 6px;max-width:none}
+.cab{display:flex;gap:14px;font-size:15px}.cab span{flex:1;display:flex;gap:6px;align-items:flex-end}.cab u{flex:1;border-bottom:1.5px solid #333;height:18px}
+.deco{height:8px;border-radius:4px;margin:10px 0 8px;background:linear-gradient(90deg,#6cb67f,#5fa8d3,#a78bd6)}
+.clean .deco{display:none}
+.sub{color:#555}.ins{background:#e8f3ee;border-radius:8px;padding:6px 12px;margin:8px 0 14px!important}
+.clean .ins{background:none;border-left:4px solid #999;border-radius:0}
+.bl{border:2px solid #cfdad5;border-radius:12px;padding:12px 14px;margin-bottom:12px;break-inside:avoid}
+.clean .bl{border:0;border-top:2px solid #bbb;border-radius:0;padding:12px 0}
+.bh{display:flex;gap:10px;align-items:flex-start}.bh p{flex:1;font-weight:700;margin:0}
+.num{background:#2f6f5a;color:#fff;border-radius:50%;width:28px;height:28px;display:grid;place-items:center;font-weight:700;flex:none}
+.etp{background:#2f6f5a;color:#fff;border-radius:999px;padding:2px 10px;font-size:13px;flex:none;white-space:nowrap}
+.ok{font-size:13px;white-space:nowrap}
+.exm{background:#fff8dc;border-radius:6px;padding:4px 10px;margin:8px 0!important}
+.assoc{display:grid;grid-template-columns:1fr 1fr;gap:6px 90px;margin-top:8px;align-items:center}
+.fig{display:flex;justify-content:space-between;align-items:center}
+.wd{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:700}
+.dot{width:13px;height:13px;border-radius:50%;border:2px solid #333;display:inline-block;flex:none}
+.comp{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin-top:8px}
+.ci{display:flex;align-items:center;gap:10px}.ci .w{font-size:22px;font-weight:700;letter-spacing:.08em}.ci small{color:#666}
+.gap{display:inline-block;width:30px;border-bottom:2.5px solid #333;margin:0 2px;height:1em}.gap.w{width:110px}
+.tx{background:#fafaf5;border-radius:8px;padding:10px 14px;margin:8px 0}
+.ti{float:right;display:flex;gap:6px;margin:0 0 6px 10px}.ti.row{float:none;justify-content:center;margin:8px 0}
+.clean .ti{display:none}
+.q{margin:8px 0}.op{display:flex;gap:8px;align-items:center;margin:3px 0 3px 18px}.op i{width:16px;height:16px;border:2px solid #333;border-radius:50%;flex:none}
+.ln{border-bottom:1.5px solid #555;height:30px}
+.oral{border:2px dashed #999;border-radius:8px;padding:8px;color:#555;font-size:14px}
+.seq{display:flex;gap:10px;margin-top:8px}.sc{flex:1;border:2px solid #cfdad5;border-radius:10px;padding:8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}.sc p{font-size:14px;margin:0!important}
+.nb{width:34px;height:34px;border:2.5px solid #333;border-radius:6px;display:block}
+.grp{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}.gb{border:2.5px solid #5fa8d3;border-radius:12px;padding:6px;display:flex;flex-wrap:wrap;gap:2px;max-width:170px;min-width:80px;min-height:70px}.gb.empty{width:130px;min-height:90px;border-style:dashed}
+.tot{display:flex;flex-wrap:wrap;gap:2px;margin:8px 0}
+.eq{font-size:18px;margin-top:8px!important}.eq u{display:inline-block;width:50px;border-bottom:2px solid #333}
+.fr{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 4px;line-height:1.1}.fr b{padding:0 6px;font-size:18px}.fr b:first-child{border-bottom:2px solid #333}
+.fq{display:flex;align-items:center;gap:14px;margin:8px 0}
+.tb{width:100%;border-collapse:collapse;margin-top:8px}.tb th,.tb td{border:2px solid #555;padding:6px 10px;height:50px}.tb th{background:#e8f3ee}.tb td.c{text-align:center}.ci2{display:inline-block;width:22px;height:22px;border:2.5px solid #333;border-radius:50%}
+.bank{border:2px dashed #888;border-radius:8px;padding:6px 10px;margin:8px 0}.bank span{display:inline-block;margin:2px 8px;font-weight:700}
+.fl{font-size:18px;margin:10px 0!important}
+.fs{display:flex;gap:12px;align-items:center;margin-top:10px}.fs>div{flex:1}.chips span{display:inline-block;border:2px solid #5fa8d3;border-radius:8px;padding:2px 10px;margin:2px 4px 2px 0;font-weight:700}
+.rosa{display:block;margin:6px auto}
+.rod{font-size:11px;color:#777;text-align:center;margin-top:10px!important}
+.gab{display:none;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:14px}
+.pgab .gab{display:block}
+.apx{display:grid;gap:6px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}.apx label{display:flex;gap:8px;align-items:center;font-weight:400}.apx input{width:22px;min-height:22px;flex:none}
+@media print{@page{size:A4;margin:0}.folha{zoom:1!important;box-shadow:none;margin:0;width:210mm;min-height:297mm;padding:14mm 15mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}.gab{break-before:page;background:#fff!important;color:#000!important;border:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== Novo visual ===== */
+body{font-family:"Atkinson Hyperlegible",system-ui,sans-serif;background:var(--bg)}
+h1,h2,h3{font-family:Lexend,system-ui,sans-serif}
+svg.ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.shell{display:block}
+.side{display:none}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;display:flex;align-items:center;gap:10px;padding:10px 16px;background:linear-gradient(135deg,#5b3fc4,#8a5cf0 65%,#6f8cf0);color:#fff}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:#5b3fc4;z-index:16}
+.topbar .logo{width:44px;height:34px}
+.wm{font:600 1.3rem/1 Lexend,sans-serif;letter-spacing:-.01em}
+.wm b{font-weight:600;color:#cdbcff}
+.content .wrap{max-width:980px}
+main{padding:18px 0 110px}
+.card{border-radius:22px;border:1px solid var(--line);box-shadow:0 6px 20px rgba(91,63,196,.08);padding:20px}
+.btn{background:linear-gradient(135deg,#5b3fc4,#7a54e6);color:#fff;border-radius:999px;padding:11px 22px;box-shadow:0 4px 12px rgba(91,63,196,.25)}
+:root[data-theme="dark"] .btn{background:linear-gradient(135deg,#a99bff,#c4aaff);color:#150f3a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{background:linear-gradient(135deg,#a99bff,#c4aaff);color:#150f3a}}
+.btn.alt{background:var(--lt);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+input,select,textarea{border-radius:14px;border:1.5px solid var(--line)}
+input:focus,select:focus,textarea:focus{border-color:var(--g)}
+.note{border-radius:16px}
+.view>h2:first-child{position:relative;margin:0 0 16px;padding:18px 110px 18px 20px;border-radius:24px;color:#fff;background:linear-gradient(135deg,#5b3fc4,#8a5cf0 70%,#6f8cf0);overflow:hidden;min-height:84px;display:flex;align-items:center;font-size:1.3rem}
+.hm{position:absolute;right:12px;bottom:0;width:78px;height:96px}
+/* início */
+.welcome{position:relative;border-radius:28px;padding:22px 20px 0;color:#fff;background:linear-gradient(160deg,#5b3fc4,#8a5cf0 60%,#6f8cf0);overflow:hidden;margin-bottom:18px}
+.welcome h1{font-size:clamp(1.6rem,5vw,2.2rem);margin:0 0 4px}
+.welcome p{margin:0 0 10px;max-width:46ch}
+.welcome q{display:block;font-style:italic;opacity:.95;max-width:30ch;margin-bottom:6px}
+.kids{display:flex;align-items:flex-end;justify-content:center;gap:0;margin:8px -6px 0}
+.kids svg{width:19%;max-width:120px;height:auto;aspect-ratio:100/130;margin:0 -2%}
+.kids svg:nth-child(2n){margin-bottom:-4px}
+.tiles{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+.tile{position:relative;text-align:left;border:0;border-radius:24px;padding:16px 14px 52px;font:inherit;color:#241f4d;cursor:pointer;box-shadow:0 8px 20px rgba(91,63,196,.12);min-height:170px}
+.tile h3{font-size:1.02rem;margin:10px 0 4px;color:#241f4d}
+.tile span.d{font-size:.9rem;color:#46427a;display:block}
+.tile .go{position:absolute;right:12px;bottom:12px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.ib{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;color:#fff;box-shadow:0 4px 10px rgba(0,0,0,.15)}
+.ib svg{width:28px;height:28px}
+.c1{background:linear-gradient(160deg,#cfe0ff,#b5ccff)}.c1 .ib,.c1 .go{background:#3b6fe0}
+.c2{background:linear-gradient(160deg,#d3f6e2,#b4ecc9)}.c2 .ib,.c2 .go{background:#2f9e68}
+.c3{background:linear-gradient(160deg,#ffeebf,#ffdf94)}.c3 .ib,.c3 .go{background:#e08a1e}
+.c4{background:linear-gradient(160deg,#e6dcff,#cfc0ff)}.c4 .ib,.c4 .go{background:#6a4de0}
+.c5{grid-column:1/-1;background:linear-gradient(160deg,#ffdcec,#ffc4dd)}.c5 .ib,.c5 .go{background:#d6478c}
+.wide{grid-column:1/-1;display:flex;align-items:center;gap:12px;min-height:0;padding:14px;background:var(--surf);border:1px solid var(--line)}
+.wide h3{margin:0}.wide .ib{background:#8a4fd8}
+.legend{display:flex;gap:12px;align-items:center}
+.legend svg{width:34px;height:44px;flex:none}
+/* navegação */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:space-around;background:var(--surf);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 20px rgba(91,63,196,.12);border-radius:22px 22px 0 0}
+.tabbar button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--mut);font:inherit;font-size:.74rem;padding:6px 2px;min-height:52px;cursor:pointer;border-radius:14px}
+.tabbar button[aria-current="page"]{color:var(--g);font-weight:700}
+.tabbar button[aria-current="page"] svg{stroke-width:2.6}
+.sheet{position:fixed;inset:0;z-index:30;display:none;align-items:flex-end;background:rgba(30,20,80,.5)}
+.sheet.on{display:flex}
+.sheet .pane{width:100%;background:var(--surf);border-radius:26px 26px 0 0;padding:16px 14px calc(16px + env(safe-area-inset-bottom,0px));max-height:85vh;overflow:auto}
+.nl button{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;background:none;color:var(--ink);font:inherit;padding:12px;border-radius:16px;min-height:48px;cursor:pointer}
+.nl button svg.ic{color:var(--g)}
+.nl button span{flex:1}
+.nl button[aria-current="page"]{background:var(--gt);font-weight:700}
+.nl button:hover{background:var(--gt)}
+.toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+/* materiais / ajuda */
+.mini{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.seg button[aria-pressed="true"]{background:var(--g);color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"]{color:#150f3a}
+details{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:12px 16px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:700;min-height:32px}
+/* desktop */
+@media (min-width:900px){
+ .shell{display:grid;grid-template-columns:300px 1fr}
+ .side{display:flex;flex-direction:column;gap:12px;position:sticky;top:0;height:100vh;overflow:auto;padding:20px 16px;background:var(--surf);border-right:1px solid var(--line)}
+ .side .brand{display:flex;align-items:center;gap:10px}
+ .side .logo{width:78px;height:62px;flex:none}
+ .side .wm{font-size:1.45rem;color:var(--ink)}.side .wm b{color:var(--g)}
+ .side .tag2{font-size:.85rem;color:var(--mut);margin:0}
+ .user{display:flex;align-items:center;gap:10px;background:var(--gt);border-radius:18px;padding:8px 12px}
+ .user svg{width:40px;height:50px;background:var(--surf);border-radius:50%}
+ .user small{display:block;color:var(--mut)}
+ .side .mas{margin-top:auto;background:var(--lt);border-radius:20px;padding:12px;text-align:center;font:600 .92rem Lexend,sans-serif;color:var(--g)}
+ .side .mas .kids{margin:0 0 6px}
+ .topbar,.tabbar,.sheet{display:none!important}
+ body::before{display:none}
+ main{padding:26px 0 40px}
+ .wide{grid-column:1/-1}
+ .welcome{padding:30px 32px 0}
+ .welcome .txt{max-width:60%}
+ .welcome .kids{position:absolute;right:20px;bottom:0;width:46%;margin:0}
+ .welcome .kids svg{width:22%}
+ .toast{bottom:20px}
+ .hm{width:96px;height:118px}
+}
+@media (min-width:1180px){.tiles{grid-template-columns:repeat(5,1fr)}.c5{grid-column:auto}.wide{grid-column:1/-1}}
+@media print{.side,.tabbar,.sheet,.topbar,.hm{display:none!important}.shell{display:block!important}.view>h2:first-child{background:none!important;color:#000!important;padding:0;min-height:0}body::before{display:none}}
+label.ck{display:flex;gap:8px;align-items:center;font-weight:400}label.ck input{width:22px;min-height:22px;flex:none}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="logo" viewBox="0 0 120 92"><path d="M60 6C42-2 20 6 18 26 8 32 10 50 24 54h36z" fill="#3b9ee6"/><path d="M60 6c18-8 40 0 42 20 10 6 8 24-6 28H60z" fill="#e65fa6"/><circle cx="34" cy="28" r="9" fill="#43b97f"/><circle cx="48" cy="40" r="7" fill="#ffc928"/><circle cx="84" cy="26" r="9" fill="#ffc928"/><circle cx="72" cy="42" r="7" fill="#8a5cf0"/><circle cx="26" cy="44" r="5" fill="#8a5cf0"/><circle cx="94" cy="44" r="5" fill="#43b97f"/><path d="M60 8v46" stroke="#fff" stroke-width="2.5"/><path d="M32 20q8 6 14 0M74 20q8 6 14 0" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M8 58q26-8 52 4 26-12 52-4v22q-26-8-52 4-26-12-52-4z" fill="#5b3fc4"/><path d="M14 60q23-5 46 6 23-11 46-6v14q-23-5-46 6-23-11-46-6z" fill="#8a7cf2"/><path d="M60 66v18" stroke="#fff" stroke-width="2" opacity=".7"/></symbol><symbol id="k-a" viewBox="0 0 100 130"><g fill="#2a1b17"><circle cx="30" cy="38" r="15"/><circle cx="46" cy="26" r="16"/><circle cx="64" cy="27" r="16"/><circle cx="77" cy="42" r="14"/><circle cx="22" cy="56" r="10"/><circle cx="79" cy="58" r="10"/></g><path d="M12 130c0-26 16-38 38-38s38 12 38 38z" fill="#3b6fe0"/><rect x="42" y="74" width="16" height="22" rx="7" fill="#8d5a3b"/><circle cx="50" cy="50" r="27" fill="#8d5a3b"/><path d="M25 46c4-14 14-19 25-19s21 5 25 19c-8-6-16-8-25-8s-17 2-25 8z" fill="#2a1b17"/><circle cx="40" cy="52" r="3.2" fill="#2b1d2f"/><circle cx="60" cy="52" r="3.2" fill="#2b1d2f"/><path d="M41 63q9 9 18 0" stroke="#2b1d2f" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="33" cy="60" r="4.5" fill="#ff8fa8" opacity=".45"/><circle cx="67" cy="60" r="4.5" fill="#ff8fa8" opacity=".45"/><path d="M36 93l14 22 14-22" stroke="#43b97f" stroke-width="3" fill="none" stroke-linecap="round"/><g transform="translate(50,114)"><ellipse cx="0" cy="-7" rx="3.6" ry="7" fill="#ffc928" transform="rotate(0)"/><ellipse cx="0" cy="-7" rx="3.6" ry="7" fill="#ffc928" transform="rotate(45)"/><ellipse cx="0" cy="-7" rx="3.6" ry="7" fill="#ffc928" transform="rotate(90)"/><ellipse cx="0" cy="-7" rx="3.6" ry="7" fill="#ffc928" transform="rotate(135)"/><ellipse cx="0" cy="-7" rx="3.6" ry="7" fill="#ffc928" transform="rotate(180)"/><ellipse cx="0" cy="-7" rx="3.6" ry="7" fill="#ffc928" transform="rotate(225)"/><ellipse cx="0" cy="-7" rx="3.6" ry="7" fill="#ffc928" transform="rotate(270)"/><ellipse cx="0" cy="-7" rx="3.6" ry="7" fill="#ffc928" transform="rotate(315)"/><circle r="5" fill="#7a4a1e"/></g></symbol><symbol id="k-b" viewBox="0 0 100 130"><path d="M12 130c0-26 16-38 38-38s38 12 38 38z" fill="#43b97f"/><rect x="42" y="74" width="16" height="22" rx="7" fill="#f2c7a0"/><circle cx="50" cy="50" r="27" fill="#f2c7a0"/><path d="M24 47c0-18 12-25 26-25s26 7 26 25c-6-8-14-12-26-12s-20 4-26 12z" fill="#3a2a22"/><circle cx="40" cy="52" r="3.2" fill="#2b1d2f"/><circle cx="60" cy="52" r="3.2" fill="#2b1d2f"/><path d="M41 63q9 9 18 0" stroke="#2b1d2f" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="33" cy="60" r="4.5" fill="#ff8fa8" opacity=".45"/><circle cx="67" cy="60" r="4.5" fill="#ff8fa8" opacity=".45"/><g fill="#fff" fill-opacity=".3" stroke="#3b2f8f" stroke-width="3"><circle cx="40" cy="52" r="9"/><circle cx="60" cy="52" r="9"/></g><path d="M49 52h2" stroke="#3b2f8f" stroke-width="3"/></symbol><symbol id="k-c" viewBox="0 0 100 130"><path d="M20 52c0-24 12-36 30-36s30 12 30 36v38c0 6-8 8-12 4H32c-4 4-12 2-12-4z" fill="#6b3f24"/><path d="M12 130c0-26 16-38 38-38s38 12 38 38z" fill="#8a5cf0"/><rect x="42" y="74" width="16" height="22" rx="7" fill="#e0a97c"/><circle cx="50" cy="50" r="27" fill="#e0a97c"/><path d="M24 50c2-18 14-26 26-26s24 8 26 26c-10-4-18-12-22-17-4 9-16 15-30 17z" fill="#6b3f24"/><circle cx="40" cy="52" r="3.2" fill="#2b1d2f"/><circle cx="60" cy="52" r="3.2" fill="#2b1d2f"/><path d="M41 63q9 9 18 0" stroke="#2b1d2f" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="33" cy="60" r="4.5" fill="#ff8fa8" opacity=".45"/><circle cx="67" cy="60" r="4.5" fill="#ff8fa8" opacity=".45"/></symbol><symbol id="k-d" viewBox="0 0 100 130"><path d="M12 130c0-26 16-38 38-38s38 12 38 38z" fill="#ffc928"/><rect x="42" y="74" width="16" height="22" rx="7" fill="#f6d5b8"/><circle cx="50" cy="50" r="27" fill="#f6d5b8"/><path d="M25 47c1-16 12-23 25-23s24 7 25 23c-8-6-16-9-25-9s-17 3-25 9z" fill="#d9a441"/><circle cx="40" cy="52" r="3.2" fill="#2b1d2f"/><circle cx="60" cy="52" r="3.2" fill="#2b1d2f"/><path d="M41 63q9 9 18 0" stroke="#2b1d2f" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="33" cy="60" r="4.5" fill="#ff8fa8" opacity=".45"/><circle cx="67" cy="60" r="4.5" fill="#ff8fa8" opacity=".45"/><path d="M22 52C22 18 78 18 78 52" stroke="#6a4de0" stroke-width="6" fill="none"/><rect x="13" y="42" width="15" height="24" rx="7.5" fill="#6a4de0"/><rect x="72" y="42" width="15" height="24" rx="7.5" fill="#6a4de0"/></symbol><symbol id="k-e" viewBox="0 0 100 130"><circle cx="19" cy="40" r="12" fill="#b4532a"/><circle cx="81" cy="40" r="12" fill="#b4532a"/><path d="M12 130c0-26 16-38 38-38s38 12 38 38z" fill="#ff7eb6"/><rect x="42" y="74" width="16" height="22" rx="7" fill="#d4986c"/><circle cx="50" cy="50" r="27" fill="#d4986c"/><path d="M24 47c2-17 13-23 26-23s24 6 26 23c-9-5-17-8-26-8s-17 3-26 8z" fill="#b4532a"/><circle cx="40" cy="52" r="3.2" fill="#2b1d2f"/><circle cx="60" cy="52" r="3.2" fill="#2b1d2f"/><path d="M41 63q9 9 18 0" stroke="#2b1d2f" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="33" cy="60" r="4.5" fill="#ff8fa8" opacity=".45"/><circle cx="67" cy="60" r="4.5" fill="#ff8fa8" opacity=".45"/><g fill="#a5683f"><circle cx="38" cy="58" r="1.4"/><circle cx="43" cy="60" r="1.4"/><circle cx="57" cy="60" r="1.4"/><circle cx="62" cy="58" r="1.4"/></g></symbol><symbol id="k-prof" viewBox="0 0 100 130"><circle cx="50" cy="20" r="12" fill="#3b2418"/><path d="M12 130c0-26 16-38 38-38s38 12 38 38z" fill="#5b3fc4"/><rect x="42" y="74" width="16" height="22" rx="7" fill="#e0a97c"/><circle cx="50" cy="50" r="27" fill="#e0a97c"/><path d="M23 50c0-21 11-30 27-30s27 9 27 30c-6-10-12-16-27-16s-21 6-27 16z" fill="#3b2418"/><circle cx="40" cy="52" r="3.2" fill="#2b1d2f"/><circle cx="60" cy="52" r="3.2" fill="#2b1d2f"/><path d="M41 63q9 9 18 0" stroke="#2b1d2f" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="33" cy="60" r="4.5" fill="#ff8fa8" opacity=".45"/><circle cx="67" cy="60" r="4.5" fill="#ff8fa8" opacity=".45"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20l1-5L16 4l4 4L9 19z"/><path d="M14 6l4 4"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z"/><path d="M12 6v14"/></symbol><symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M4 18l5-5 4 4 3-3 4 4"/></symbol><symbol id="i-note" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></symbol><symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></symbol><symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17v.01"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18M6 21h12M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/></symbol><symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol><symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 3-6 6-6s6 2 6 6M15 14c3 0 6 1.5 6 5"/></symbol></defs></svg><div class="shell">
+<aside class="side app-chrome" aria-label="Menu lateral">
+  <div class="brand"><svg class="logo" role="img" aria-label="Logo PlanejaInclusão"><use href="#logo"/></svg><div><div class="wm">Planeja<b>Inclusão</b></div><p class="tag2">Educação que acolhe, planeja e transforma!</p></div></div>
+  <div class="user"><svg viewBox="0 0 100 130" aria-hidden="true"><use href="#k-prof"/></svg><div><strong>Professora</strong><small>Neste aparelho</small></div></div>
+  <nav class="nl" id="nav" aria-label="Seções do aplicativo"></nav>
+  <div class="mas"><div class="kids" aria-hidden="true"><svg viewBox="0 0 100 130"><use href="#k-c"/></svg><svg viewBox="0 0 100 130"><use href="#k-a"/></svg><svg viewBox="0 0 100 130"><use href="#k-b"/></svg></div>Juntos por uma educação mais inclusiva!</div>
+</aside>
+<div class="content">
+<header class="topbar app-chrome"><svg class="logo" role="img" aria-label="Logo PlanejaInclusão"><use href="#logo"/></svg><span class="wm">Planeja<b>Inclusão</b></span></header>
+<main class="wrap">
+
+<section class="view" id="inicio" aria-labelledby="h-inicio">
+  <div class="welcome">
+    <div class="txt"><h1 id="h-inicio">Olá, Professora!</h1><p>Que bom te ver por aqui! Planeje atividades e apoios para todos os estudantes.</p><q>Incluir é acreditar que todos podem aprender, do seu próprio jeito.</q></div>
+    <div class="kids" aria-hidden="true"><svg viewBox="0 0 100 130"><use href="#k-c"/></svg><svg viewBox="0 0 100 130"><use href="#k-a"/></svg><svg viewBox="0 0 100 130"><use href="#k-b"/></svg><svg viewBox="0 0 100 130"><use href="#k-d"/></svg><svg viewBox="0 0 100 130"><use href="#k-e"/></svg></div>
+  </div>
+  <div class="tiles">
+    <button class="tile c1" data-go="atividade" type="button"><span class="ib"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg></span><h3>Criar atividade</h3><span class="d">Descreva a turma e receba uma proposta para adaptar.</span><span class="go"><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></button>
+    <button class="tile c2" data-go="biblioteca" type="button"><span class="ib"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg></span><h3>Biblioteca de atividades — 4º ano</h3><span class="d">Folhas A4 ilustradas, prontas por disciplina.</span><span class="go"><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></button>
+    <button class="tile c3" data-go="visuais" type="button"><span class="ib"><svg class="ic" aria-hidden="true"><use href="#i-image"/></svg></span><h3>Recursos visuais</h3><span class="d">Planeje cartões, jogos de associação e sequências.</span><span class="go"><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></button>
+    <button class="tile c4" data-go="diario" type="button"><span class="ib"><svg class="ic" aria-hidden="true"><use href="#i-note"/></svg></span><h3>Diário reflexivo</h3><span class="d">Registre o que observou, tentou e precisa rever.</span><span class="go"><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></button>
+    <button class="tile c5" data-go="fundamentos" type="button"><span class="ib"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg></span><h3>Fundamentação</h3><span class="d">Relações com a LDB e a perspectiva de Mantoan.</span><span class="go"><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></button>
+    <button class="tile wide" data-go="ajuda" type="button"><span class="ib"><svg class="ic" aria-hidden="true"><use href="#i-people"/></svg></span><span><h3>Suporte e acessibilidade</h3><span class="d">Como usar os apoios para estudantes autistas, com dislexia, TDAH e outras necessidades.</span></span><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+  </div>
+  <div class="card legend" style="margin-top:16px"><svg viewBox="0 0 100 130" aria-hidden="true"><use href="#k-a"/></svg><p style="margin:0"><strong>O girassol</strong> é um símbolo internacional de necessidades de apoio não visíveis. Aqui ele aparece como representação de acolhimento e <strong>não indica diagnóstico</strong>. Cada estudante aprende do seu jeito.</p></div>
+  <div class="note" style="margin-top:16px"><strong>Sobre este protótipo.</strong> As atividades podem ser geradas por IA (Google Gemini, com a sua chave gratuita, quando configurada em Configurações) ou por um modelo simples de regras locais. Em ambos os casos são sugestões de apoio ao planejamento: não são diagnósticos, não substituem a sua avaliação profissional e não presumem que estudantes com o mesmo diagnóstico aprendem da mesma maneira. Nenhuma eficácia pedagógica foi comprovada. Não digite nomes nem dados pessoais de estudantes.</div>
+</section>
+
+<section class="view" id="atividade" aria-labelledby="h-atv">
+  <h2 id="h-atv">Gerar atividade</h2>
+  <div class="card noprint">
+    <form id="fAtv">
+      <div class="row">
+        <div><label for="ano">Ano escolar</label><select id="ano" required><option value="">Selecione</option><option>Educação Infantil</option><option>1º ano do Ensino Fundamental</option><option>2º ano do Ensino Fundamental</option><option>3º ano do Ensino Fundamental</option><option>4º ano do Ensino Fundamental</option><option>5º ano do Ensino Fundamental</option><option>6º ano do Ensino Fundamental</option><option>7º ano do Ensino Fundamental</option><option>8º ano do Ensino Fundamental</option><option>9º ano do Ensino Fundamental</option><option>Ensino Médio</option></select></div>
+        <div><label for="disc">Disciplina</label><input id="disc" required placeholder="Ex.: Língua Portuguesa"></div>
+      </div>
+      <div class="row">
+        <div><label for="cont">Conteúdo</label><input id="cont" required placeholder="Ex.: Leitura de rótulos e embalagens"></div>
+        <div><label for="tempo">Tempo disponível <span class="hint">(minutos)</span></label><input id="tempo" type="number" min="10" max="240" value="50"></div>
+      </div>
+      <div><label for="obj">Objetivo de aprendizagem <span class="hint">(opcional: a IA sugere um)</span></label><textarea id="obj" placeholder="Ex.: Identificar informações em rótulos e relacioná-las ao cotidiano."></textarea></div>
+      <div><label for="barr">Barreiras pedagógicas observadas <span class="hint">(descreva a situação, não rótulos de diagnóstico)</span></label><textarea id="barr" placeholder="Ex.: dificuldade de leitura de textos longos; dispersão em tarefas extensas; ruído na sala."></textarea><div id="chips" style="margin-top:8px" aria-label="Toque para adicionar barreiras comuns"></div></div>
+      <div><label for="rec">Recursos disponíveis na sala de aula</label><textarea id="rec" placeholder="Ex.: lousa, papel, canetas coloridas, tablet, materiais recicláveis."></textarea></div>
+      <div class="actions"><button class="btn" type="submit" id="bIA" disabled>Gerar com IA</button><button class="btn alt" type="button" id="bLocal">Gerar sem IA (modelo simples)</button><button class="btn alt" type="button" id="ex1">Exemplo fictício</button></div><p class="hint" id="iaNote">Conectando à IA…</p>
+    </form>
+  </div>
+  <div id="resAtv" aria-live="polite"><p class="empty noprint">A atividade gerada aparecerá aqui.</p></div>
+</section>
+
+<section class="view" id="fundamentos" aria-labelledby="h-fund">
+  <h2 id="h-fund">Fundamentação e reflexão pedagógica</h2>
+  <div class="note"><strong>Como ler esta seção.</strong> Cada cartão separa o que a lei determina, a interpretação do aplicativo e as referências, cada uma com seu status de verificação. Não há citações literais, páginas nem trechos atribuídos a autores. As sugestões do aplicativo e da IA são apoios ao planejamento docente: não são diagnósticos nem substituem a avaliação profissional do professor, e estudantes com o mesmo diagnóstico podem aprender de maneiras diferentes. Revisão feita em 22/10/2026; confira sempre o texto vigente nas fontes oficiais.</div>
+  <div id="fundList"></div>
+</section>
+
+<section class="view" id="visuais" aria-labelledby="h-vis">
+  <h2 id="h-vis">Recursos visuais</h2>
+  <div class="note"><strong>Sem geração de imagens.</strong> Esta área planeja o material. Nenhuma imagem é criada por IA: os espaços tracejados indicam onde você pode desenhar, colar uma imagem com licença de uso adequada ou, no futuro, receber uma imagem de uma API integrada.</div>
+  <div class="card noprint">
+    <form id="fVis">
+      <div class="row">
+        <div><label for="vtipo">Tipo de recurso</label><select id="vtipo"><option>Cartões ilustrados</option><option>Jogo de associação</option><option>Sequência visual</option><option>Material de alfabetização</option><option>Outro recurso visual</option></select></div>
+        <div><label for="vtema">Tema ou conteúdo</label><input id="vtema" required placeholder="Ex.: Rotina da escola"></div>
+      </div>
+      <div><label for="vitens">Itens do material <span class="hint">(separe por vírgula)</span></label><input id="vitens" placeholder="Ex.: chegada, lanche, leitura, recreio, saída"></div>
+      <div><label for="vbarr">Barreira que o material busca reduzir</label><input id="vbarr" placeholder="Ex.: dificuldade de acompanhar instruções só faladas"></div>
+      <div class="actions"><button class="btn" type="submit">Montar ficha de planejamento</button><button class="btn alt" type="button" id="ex2">Preencher com exemplo fictício</button></div>
+    </form>
+  </div>
+  <div id="resVis" aria-live="polite"><p class="empty noprint">A ficha de planejamento aparecerá aqui.</p></div>
+</section>
+
+<section class="view" id="diario" aria-labelledby="h-dia">
+  <h2 id="h-dia">Diário reflexivo</h2>
+  <div class="note noprint">Os registros ficam apenas na memória desta página e, quando o navegador permite, no armazenamento local deste aparelho. Eles não são enviados a nenhum servidor e podem ser apagados ao limpar os dados do navegador. Evite nomes e dados pessoais de estudantes.</div>
+  <div class="card noprint">
+    <form id="fDia">
+      <div><label for="d1">Qual barreira foi observada?</label><textarea id="d1" required></textarea></div>
+      <div><label for="d2">Que estratégia foi utilizada?</label><textarea id="d2" required></textarea></div>
+      <div><label for="d3">Como os estudantes participaram?</label><textarea id="d3"></textarea></div>
+      <div><label for="d4">O que funcionou?</label><textarea id="d4"></textarea></div>
+      <div><label for="d5">O que precisa ser revisto?</label><textarea id="d5"></textarea></div>
+      <div class="actions"><button class="btn" type="submit">Salvar registro</button></div>
+    </form>
+  </div>
+  <h3>Registros desta sessão</h3>
+  <div id="diaList" aria-live="polite"></div>
+  <div class="actions noprint"><button class="btn alt" id="printDia" type="button">Imprimir registros</button></div>
+</section>
+
+<section class="view" id="biblioteca" aria-labelledby="h-lib">
+  <h2 id="h-lib" class="noprint">Biblioteca de Atividades — 4º ano</h2>
+  <div id="libList">
+    <div class="note noprint"><strong>Folhas originais.</strong> São 15 folhas A4 para imprimir, de Língua Portuguesa, Matemática, Ciências, História e Geografia. As ilustrações são desenhos vetoriais (SVG) criados para este aplicativo; <strong>não foram geradas por IA de imagem</strong>, pois os modelos de imagem do Gemini não têm nível gratuito na API; por isso não são usados. Os apoios abaixo são pontos de partida: ajuste conforme o que você observa em cada estudante, e não conforme o diagnóstico. Revise o conteúdo antes de usar.</div>
+    <div class="card noprint">
+      <div class="row">
+        <div><label for="lfd">Disciplina</label><select id="lfd"><option value="">Todas</option><option>Língua Portuguesa</option><option>Matemática</option><option>Ciências</option><option>História</option><option>Geografia</option></select></div>
+        <div><label for="lpre">Apoios iniciais</label><select id="lpre"><option value="nenhum">Sem apoios extras</option><option value="autismo">Sugestão inicial para autismo</option><option value="dislexia">Sugestão inicial para dislexia</option><option value="ambos">Apoios combinados</option></select></div>
+        <div><label for="lniv">Nível de apoio</label><select id="lniv"><option value="padrao">Padrão</option><option value="menos">Mais apoio (menos itens)</option></select></div>
+      </div>
+      <p class="hint">Ao abrir uma folha, você pode ligar e desligar cada apoio individualmente.</p>
+    </div>
+    <div class="cards noprint" id="libGrid"></div>
+    <div class="card noprint" style="margin-top:16px">
+      <h3>Gerar nova folha ilustrada</h3>
+      <form id="fGen">
+        <div class="row">
+          <div><label for="gd">Disciplina</label><select id="gd"><option>Língua Portuguesa</option><option>Matemática</option><option>Ciências</option><option>História</option><option>Geografia</option></select></div>
+          <div><label for="gc">Conteúdo</label><input id="gc" required placeholder="Ex.: Substantivos e adjetivos"></div>
+        </div>
+        <div class="row">
+          <div><label for="gt">Tipo de atividade</label><select id="gt"><option>Variado</option><option>Associar figuras e palavras</option><option>Completar palavras</option><option>Texto com perguntas</option><option>Sequência de acontecimentos</option><option>Problemas com desenhos</option><option>Tabela ou classificação</option><option>Completar esquema</option></select></div>
+          <div><label for="go">Barreiras ou habilidades <span class="hint">(opcional)</span></label><input id="go" placeholder="Ex.: ainda lê palavras curtas"></div>
+        </div>
+        <div class="actions"><button class="btn" id="bGen" type="submit">Gerar atividade ilustrada</button></div>
+        <p class="hint" id="genNote">A IA monta a folha usando apenas as ilustrações desta biblioteca; os apoios iniciais escolhidos acima são aplicados.</p>
+      </form>
+    </div>
+  </div>
+  <div id="libView" hidden>
+    <div class="card noprint">
+      <div class="actions"><button class="btn alt" id="back" type="button">Voltar à biblioteca</button><button class="btn" id="pr3" type="button">Imprimir ou salvar em PDF</button></div>
+      <p class="hint">Na janela de impressão, escolha “Salvar como PDF” e papel A4. Se a impressão não abrir aqui, abra o link da página em uma aba do navegador.</p>
+      <div class="apx" id="apBox"></div>
+    </div>
+    <div class="folhawrap" id="folhaWrap"></div>
+  </div>
+</section>
+
+
+<section class="view" id="materiais" aria-labelledby="h-mat">
+  <h2 id="h-mat">Meus materiais</h2>
+  <div class="mini">
+    <div class="card"><h3>Diário reflexivo</h3><p id="matDia" class="hint">Nenhum registro salvo ainda.</p><button class="btn" data-go="diario" type="button">Abrir diário</button></div>
+    <div class="card"><h3>Folhas da biblioteca</h3><p class="hint">15 folhas A4 do 4º ano para abrir, ajustar os apoios e imprimir ou salvar em PDF.</p><button class="btn" data-go="biblioteca" type="button">Abrir biblioteca</button></div>
+    <div class="card"><h3>Atividades geradas</h3><p class="hint">As atividades geradas não ficam guardadas automaticamente. Use “Imprimir ou salvar em PDF” ou “Copiar texto” para guardar.</p><button class="btn" data-go="atividade" type="button">Criar atividade</button></div>
+  </div>
+</section>
+
+<section class="view" id="config" aria-labelledby="h-cfg">
+  <h2 id="h-cfg">Configurações</h2>
+  <div class="card"><h3>Inteligência artificial: Google Gemini (gratuito)</h3>
+    <p id="gStatus" class="hint"></p>
+    <ol><li>Abra <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> com sua conta Google e crie uma chave (sem cartão de crédito).</li><li>Cole a chave abaixo e toque em “Testar conexão”.</li></ol>
+    <div><label for="gkey">Chave da API</label><input id="gkey" type="password" autocomplete="off" placeholder="Cole sua chave aqui"></div>
+    <label class="ck"><input type="checkbox" id="gsave"> Lembrar neste aparelho (não marque em computador compartilhado)</label>
+    <div><label for="gmodel">Modelo</label><select id="gmodel"></select></div>
+    <details><summary>Avançado: proxy próprio (esconde a chave)</summary><p class="hint">Para compartilhar o aplicativo com outras professoras sem que cada uma crie uma chave, publique o arquivo gemini-proxy-worker.js (Cloudflare Workers) e cole o endereço dele aqui. Todas passam a dividir a mesma cota gratuita.</p><label for="gproxy">Endereço do proxy</label><input id="gproxy" type="url" placeholder="https://seu-proxy.workers.dev"></details>
+    <div class="actions"><button class="btn" id="gSave" type="button">Salvar</button><button class="btn alt" id="gTest" type="button">Testar conexão</button><button class="btn alt" id="gDel" type="button">Remover chave</button></div>
+    <p class="hint" id="gMsg" aria-live="polite"></p>
+  </div>
+  <div class="card"><h3>Limites e cuidados do nível gratuito</h3><ul>
+    <li>Gratuito e sem cartão apenas para modelos de texto da família Flash (usamos gemini-3.5-flash-lite, gemini-3.6-flash e gemini-3.8-flash, com troca automática se um atingir o limite). Modelos Pro, Gemini 4 Argon e <strong>todos os modelos de imagem não têm nível gratuito</strong> na API, por isso não são usados.</li>
+    <li>Os limites por minuto e por dia dependem do modelo e do seu projeto e podem mudar. Veja os seus em <a href="https://aistudio.google.com/rate-limit" target="_blank" rel="noopener">aistudio.google.com/rate-limit</a>. Ao atingir o limite, o aplicativo avisa e você pode usar o modelo simples.</li>
+    <li>No nível gratuito, o Google pode usar o que você envia para melhorar seus produtos. Não digite nomes nem dados de estudantes.</li>
+    <li>A chave é pessoal: guarde como uma senha. Não envie o arquivo com a chave preenchida e não use “Lembrar” em aparelho compartilhado.</li>
+  </ul></div>
+  <div class="card"><h3>Offline ou com internet?</h3><ul>
+    <li><strong>Funcionam offline</strong> (com o arquivo já aberto): início, biblioteca com as 15 folhas A4, ajuste de apoios, impressão e PDF pelo navegador, “Gerar sem IA”, recursos visuais, diário (salvo no aparelho), fundamentação e configurações.</li>
+    <li><strong>Precisam de internet:</strong> “Gerar com IA” e “Gerar atividade ilustrada” (chamam o Gemini) e as fontes Lexend e Atkinson (offline o navegador usa uma fonte comum).</li>
+  </ul></div>
+  <div class="card"><h3>Aparência</h3>
+    <div class="seg" role="group" aria-label="Tema"><button class="btn alt" type="button" data-theme-set="auto">Automático</button><button class="btn alt" type="button" data-theme-set="light">Claro</button><button class="btn alt" type="button" data-theme-set="dark">Escuro</button></div>
+    <h3>Tamanho do texto</h3>
+    <div class="seg" role="group" aria-label="Tamanho do texto"><button class="btn alt" type="button" data-ts="1">Normal</button><button class="btn alt" type="button" data-ts="1.15">Grande</button><button class="btn alt" type="button" data-ts="1.3">Muito grande</button></div>
+    <p class="hint">As preferências ficam salvas neste aparelho, quando o navegador permite. Não afetam as folhas A4.</p>
+  </div>
+</section>
+
+<section class="view" id="ajuda" aria-labelledby="h-aj">
+  <h2 id="h-aj">Ajuda</h2>
+  <details open><summary>Como criar uma atividade?</summary><p>Vá em “Criar atividade”, informe ano, disciplina, conteúdo e as barreiras que você observou, e toque em “Gerar com IA” ou “Gerar sem IA”.</p></details>
+  <details><summary>Como usar a biblioteca do 4º ano?</summary><p>Escolha a disciplina, os apoios iniciais e o nível de apoio. Ao abrir uma folha, ligue ou desligue cada apoio. Os apoios são pontos de partida: ajuste conforme o que você observa em cada estudante.</p></details>
+  <details><summary>Como salvar em PDF ou imprimir?</summary><p>Toque em “Imprimir ou salvar em PDF” e, na janela de impressão, escolha “Salvar como PDF” e papel A4. Se a janela não abrir, abra a página em uma aba do navegador.</p></details>
+  <details><summary>Meus registros ficam seguros?</summary><p>Os registros do diário ficam só neste aparelho e não são enviados a nenhum servidor. Evite nomes e dados pessoais de estudantes.</p></details>
+  <details><summary>As ilustrações foram feitas por IA?</summary><p>Não. São desenhos vetoriais (SVG) criados para este aplicativo e funcionam offline. A IA (Gemini) escolhe, entre essas ilustrações, as que combinam com o conteúdo. Os modelos de imagem do Gemini não têm nível gratuito na API, então não são usados.</p></details>
+  <details><summary>Como ativar a IA gratuita?</summary><p>Vá em Configurações, crie uma chave gratuita no Google AI Studio e cole no campo indicado. Sem chave, o aplicativo continua funcionando com o modelo simples e as folhas prontas.</p></details>
+</section>
+
+</main>
+<footer><div class="wrap">PlanejaInclusão · protótipo acadêmico em desenvolvimento. Apoio à prática docente, sem substituir sua formação, autonomia e avaliação de cada estudante.</div></footer>
+</div></div>
+<nav class="tabbar app-chrome" id="tabs" aria-label="Navegação principal"></nav>
+<div class="sheet app-chrome" id="sheet"><div class="pane"><nav class="nl" id="more" aria-label="Mais seções"></nav></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200)};
+const ICO=(n)=>`<svg class="ic" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+const VIEWS=[["inicio","Início","home"],["atividade","Criar atividade","pencil"],["biblioteca","Biblioteca de atividades — 4º ano","book"],["visuais","Recursos visuais","image"],["diario","Diário reflexivo","note"],["fundamentos","Fundamentação","scale"],["materiais","Meus materiais","folder"],["config","Configurações","gear"],["ajuda","Ajuda","help"]];
+const TABS=[["inicio","Início","home"],["atividade","Atividades","pencil"],["biblioteca","Biblioteca","book"],["visuais","Recursos","image"]];
+const MASC={atividade:"c",biblioteca:"b",visuais:"d",diario:"prof",fundamentos:"a",materiais:"e",config:"c",ajuda:"d"};
+const nav=$("#nav"),tabs=$("#tabs"),sheet=$("#sheet");
+nav.innerHTML=VIEWS.map(([id,nm,ic])=>`<button type="button" data-go="${id}">${ICO(ic)}<span>${nm}</span></button>`).join("");
+$("#more").innerHTML=VIEWS.filter(v=>!TABS.some(t=>t[0]===v[0])).map(([id,nm,ic])=>`<button type="button" data-go="${id}">${ICO(ic)}<span>${nm}</span></button>`).join("");
+tabs.innerHTML=TABS.map(([id,nm,ic])=>`<button type="button" data-go="${id}">${ICO(ic)}<span>${nm}</span></button>`).join("")+`<button type="button" data-more>${ICO("dots")}<span>Mais</span></button>`;
+document.querySelectorAll(".view>h2:first-child").forEach(h=>{const k=MASC[h.parentElement.id];if(k)h.insertAdjacentHTML("beforeend",`<svg class="hm" viewBox="0 0 100 130" aria-hidden="true"><use href="#k-${k}"/></svg>`)});
+function matRender(){try{const n=reg.length;$("#matDia").textContent=n?`${n} registro(s) salvo(s) neste aparelho.`:"Nenhum registro salvo ainda."}catch(e){}}
+function show(id){
+  if(!VIEWS.some(v=>v[0]===id))id="inicio";
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));
+  document.querySelectorAll("#nav button,#more button,#tabs button[data-go]").forEach(b=>{if(b.dataset.go===id)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  const mb=tabs.querySelector("[data-more]");if(TABS.some(t=>t[0]===id))mb.removeAttribute("aria-current");else mb.setAttribute("aria-current","page");
+  sheet.classList.remove("on");if(id==="materiais")matRender();
+  window.scrollTo(0,0);
+}
+document.addEventListener("click",e=>{if(e.target.closest("[data-more]"))sheet.classList.add("on");if(e.target===sheet)sheet.classList.remove("on")});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")sheet.classList.remove("on")});
+/* preferências de aparência */
+let PREF={theme:"auto",ts:"1"};try{Object.assign(PREF,JSON.parse(localStorage.getItem("planejainclusao_pref")||"{}"))}catch(e){}
+function aplicaPref(){const r=document.documentElement;if(PREF.theme==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",PREF.theme);document.body.style.fontSize=(17*parseFloat(PREF.ts||1))+"px";
+ document.querySelectorAll("[data-theme-set]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.themeSet===PREF.theme));document.querySelectorAll("[data-ts]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ts===String(PREF.ts)))}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-theme-set],[data-ts]");if(!t)return;if(t.dataset.themeSet)PREF.theme=t.dataset.themeSet;if(t.dataset.ts)PREF.ts=t.dataset.ts;aplicaPref();try{localStorage.setItem("planejainclusao_pref",JSON.stringify(PREF))}catch(err){}});
+aplicaPref();
+document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(g)show(g.dataset.go)});
+show((location.hash||"").slice(1));
+
+/* ---------- Atividade (regras locais, sem IA) ---------- */
+const BARS=[
+ {k:/leitur|ler |texto|decodific|alfabet/,n:"Leitura e escrita",p:"Texto em partes curtas, fonte ampla e com espaçamento; leitura em dupla ou em voz alta pelo professor.",a:"Responder por desenho, fala, colagem, cartões de palavras ou ditado ao colega ou ao professor."},
+ {k:/visual|enxerg|baixa vis|cego|contraste/,n:"Acesso visual",p:"Materiais com alto contraste e letra ampliada; descrição oral do que está na lousa; objetos concretos para tocar.",a:"Explorar o conteúdo por tato, audição e descrição verbal, em vez de depender só de imagens."},
+ {k:/audit|ouvir|surd|ru[ií]do|libras/,n:"Acesso auditivo e ruído",p:"Instruções também escritas e em imagens; posição da turma que favoreça ver o rosto de quem fala; reduzir ruído; contar com intérprete de Libras quando houver estudante surdo usuário dessa língua.",a:"Participar por registro escrito ou visual, gestos, apontamentos e trabalho em dupla."},
+ {k:/aten[cç]|concentr|agita|disper|distra/,n:"Atenção e organização",p:"Dividir a tarefa em etapas curtas com marcação visível do que falta; combinar pausas; agenda visual da aula.",a:"Escolher a ordem das etapas, trabalhar em pequenos blocos ou assumir uma função no grupo."},
+ {k:/motor|escrev|coordena|caligraf/,n:"Participação motora",p:"Oferecer alternativas ao lápis (letras móveis, carimbos, teclado, tablet); apoio de prancheta ou engrossadores quando fizer sentido.",a:"Mostrar o que aprendeu apontando, montando, ordenando cartões ou ditando."},
+ {k:/comunic|fala|oral|linguagem|express/,n:"Comunicação e expressão",p:"Perguntas com opções, apoio de imagens e gestos, tempo ampliado para resposta; aceitar diferentes formas de comunicação.",a:"Responder com cartões, pranchas de comunicação, escolha entre opções, desenho ou gesto."},
+ {k:/ansied|emocion|frustr|medo|conflito|comporta/,n:"Aspectos socioemocionais",p:"Previsibilidade na rotina, combinados claros, tarefas com desafio gradual e valorização do processo, não só do resultado.",a:"Escolher o nível de desafio, o parceiro de trabalho ou um espaço mais tranquilo para concluir."}
+];
+function gerar(){
+  const v=id=>$("#"+id).value.trim();
+  const d={ano:v("ano"),disc:v("disc"),cont:v("cont"),obj:v("obj")||`Compreender ${v("cont")} por diferentes caminhos`,t:Math.max(10,parseInt(v("tempo"))||50),barr:v("barr"),rec:v("rec")};
+  const bl=d.barr.toLowerCase();
+  const hit=BARS.filter(b=>b.k.test(bl));
+  const rec=d.rec?d.rec.split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean):[];
+  const m=p=>Math.max(1,Math.round(d.t*p));
+  const li=a=>a.map(x=>`<li>${x}</li>`).join("");
+  const C=esc(d.cont);
+  const mat=[...rec.map(esc),"Folha de atividade impressa ou projetada (com versão ampliada, se necessário)","Cartões de apoio com palavras-chave e imagens do conteúdo"];
+  const passos=[
+   `Abertura (${m(.15)} min): apresente o objetivo em uma frase e mostre a sequência da aula em cartões ou na lousa. Pergunte o que a turma já sabe sobre “${C}”.`,
+   `Exploração (${m(.4)} min): apresente “${C}” com pelo menos dois canais (fala + imagem, objeto ou demonstração). Faça uma demonstração curta e, em seguida, uma tentativa coletiva.`,
+   `Produção (${m(.35)} min): estudantes realizam a tarefa em duplas ou pequenos grupos, escolhendo uma das formas de participação listadas abaixo. Circule oferecendo apoio, sem antecipar respostas.`,
+   `Fechamento (${m(.1)} min): cada grupo compartilha o que fez de um jeito à sua escolha. Retome o objetivo e pergunte o que ajudou e o que atrapalhou.`
+  ];
+  const quest=[
+   `Com suas palavras, desenho ou cartões: o que você entendeu sobre ${C}?`,
+   `Mostre um exemplo de ${C} usando um objeto, uma imagem ou uma situação da escola.`,
+   `Em que momento do dia a dia ${C} aparece? Conte, desenhe ou represente.`,
+   `Desafio opcional: explique para um colega como fazer ou reconhecer ${C}.`
+  ];
+  const part=["Falar, escrever, desenhar, montar com cartões ou gravar a resposta (se houver aparelho disponível).","Trabalhar individualmente, em dupla ou em pequeno grupo, conforme a escolha do estudante.","Escolher entre tarefas de mesmo objetivo e níveis diferentes de apoio ou desafio.",...hit.map(b=>b.a)];
+  const acess=["Instruções dadas em mais de um formato (falado, escrito e visual).","Tempo flexível: combine antes o que é essencial e o que é extensão.","Linguagem direta, frases curtas e exemplos do cotidiano.","As necessidades variam entre estudantes, mesmo com o mesmo diagnóstico: pergunte ao estudante o que o ajuda e dialogue com a família e a equipe de apoio, quando houver.",...hit.map(b=>`<strong>${b.n}:</strong> ${b.p}`)];
+  if(!hit.length&&d.barr)acess.push("As barreiras descritas não corresponderam a categorias previstas neste protótipo. Revise as adaptações acima à luz do que você observou.");
+  if(!d.barr)acess.push("Nenhuma barreira foi informada. Descreva o que observou na turma para receber sugestões mais específicas.");
+  const aval=["Observe o processo (como o estudante tenta, pede ajuda, usa recursos) além do produto final.","Registre evidências em uma ou duas frases por estudante, sem rótulos, apenas com o que foi observado.","Verifique se o objetivo foi alcançado por diferentes caminhos e se alguma barreira ainda impediu a participação.","Use o diário reflexivo para anotar o que manter e o que rever na próxima aula."];
+  $("#resAtv").innerHTML=`<article class="card" id="folha">
+   <h3>${esc(d.disc)}: ${C}</h3>
+   <p>${esc(d.ano)} · ${d.t} minutos</p>
+   <div class="sec"><h3>1. Título e objetivo</h3><p><strong>Atividade:</strong> Explorando ${C} de diferentes maneiras</p><p><strong>Objetivo:</strong> ${esc(d.obj)}</p></div>
+   <div class="sec"><h3>2. Materiais necessários</h3><ul>${li(mat)}</ul></div>
+   <div class="sec"><h3>3. Instruções passo a passo</h3><ol>${li(passos)}</ol></div>
+   <div class="sec"><h3>4. Questões ou etapas</h3><ol>${li(quest)}</ol></div>
+   <div class="sec"><h3>5. Alternativas de participação</h3><ul>${li(part)}</ul></div>
+   <div class="sec"><h3>6. Acessibilidade e adaptação</h3><ul>${li(acess)}</ul></div>
+   <div class="sec"><h3>7. Orientações para avaliar a aprendizagem</h3><ul>${li(aval)}</ul></div>
+   <div class="sec"><h3>Por que estas sugestões?</h3><ul>${li(["Oferecer mais de um canal e mais de uma forma de resposta reduz barreiras de acesso e de expressão, permitindo alcançar o mesmo objetivo por caminhos diferentes.","Etapas curtas e instruções claras diminuem a carga de organização da tarefa.",...hit.map(b=>`${b.n}: as adaptações indicadas buscam reduzir essa barreira descrita por você.`),"Registrar o que foi observado ajuda a revisar a prática, sem rotular o estudante."])}</ul><p class="hint">São justificativas pedagógicas do protótipo, não exigências legais nem posições atribuídas a autores.</p></div>
+   <p class="hint" style="margin-top:14px">Proposta gerada por regras locais do protótipo PlanejaInclusão, sem IA, para revisão do professor. Não é diagnóstico e não substitui o planejamento nem a avaliação individual.</p>
+   <div class="actions noprint"><button class="btn" id="pr1" type="button">Imprimir ou salvar em PDF</button><button class="btn alt" id="cp1" type="button">Copiar texto</button></div>
+   <p class="hint noprint">Para PDF, escolha “Salvar como PDF” na janela de impressão. Se a impressão não abrir dentro do aplicativo, abra o link da página em uma aba do navegador.</p>
+  </article>`;
+  $("#folha").scrollIntoView({behavior:"smooth"});
+}
+function imprimir(){try{window.print()}catch(e){toast("Não foi possível abrir a impressão aqui. Abra a página em uma aba do navegador.")}}
+/* ---------- IA: Google Gemini (nível gratuito) ---------- */
+const GK="planejainclusao_gemini",MODELS=["gemini-3.5-flash-lite","gemini-3.6-flash","gemini-3.8-flash"];
+let GCFG={key:"",model:MODELS[0],proxy:"",save:false},SAMPLE=null,ultima=null;
+(function(){try{const o=JSON.parse(localStorage.getItem(GK)||"{}");GCFG.model=MODELS.includes(o.model)?o.model:MODELS[0];GCFG.proxy=o.proxy||"";GCFG.save=!!o.save;if(o.save)GCFG.key=o.key||""}catch(e){}try{if(!GCFG.key)GCFG.key=sessionStorage.getItem(GK+"_k")||""}catch(e){}})();
+function gErr(code,msg){const e=new Error(msg);e.code=code;e.gmsg=msg;return e}
+function gJSON(t){t=String(t||"").replace(/^\s*```(?:json)?/i,"").replace(/```\s*$/,"").trim();try{return JSON.parse(t)}catch(e){const i=t.indexOf("{"),j=t.lastIndexOf("}");if(i>=0&&j>i)return JSON.parse(t.slice(i,j+1));throw e}}
+async function gemini(prompt){
+  if(!GCFG.key&&!GCFG.proxy)throw gErr("no_key","A IA está desativada. Configure sua chave gratuita do Gemini em Configurações.");
+  const order=[GCFG.model,...MODELS.filter(m=>m!==GCFG.model)];let last=null;
+  for(const m of order){
+    const body=JSON.stringify({contents:[{role:"user",parts:[{text:prompt}]}],generationConfig:{responseMimeType:"application/json",temperature:.7}});
+    const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),90000);let r;
+    try{
+      r=GCFG.proxy?await fetch(GCFG.proxy+(GCFG.proxy.includes("?")?"&":"?")+"model="+encodeURIComponent(m),{method:"POST",headers:{"Content-Type":"application/json"},body,signal:ctl.signal})
+        :await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`,{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":GCFG.key},body,signal:ctl.signal});
+    }catch(e){throw gErr("network","Não foi possível falar com o Google. Verifique a internet ou use o modelo simples, que funciona offline.")}
+    finally{clearTimeout(tm)}
+    if(r.status===400||r.status===401||r.status===403)throw gErr("key","O Google recusou a chave ou o pedido (erro "+r.status+"). Confira se copiou a chave inteira, se ela está ativa e se não tem restrições que bloqueiem este site.");
+    if(r.status===404||r.status===429||r.status>=500){last=r.status;continue}
+    if(!r.ok)throw gErr("http","O Google respondeu com erro "+r.status+".");
+    let d;try{d=await r.json()}catch(e){throw gErr("format","Resposta inesperada do Google.")}
+    const c=d&&d.candidates&&d.candidates[0];
+    if(!c||!c.content){throw gErr("blocked","O Google não devolveu conteúdo"+(d&&d.promptFeedback&&d.promptFeedback.blockReason?" (bloqueado por segurança)":"")+". Reescreva o pedido e tente de novo.")}
+    const txt=(c.content.parts||[]).filter(x=>x.text&&!x.thought).map(x=>x.text).join("");
+    try{const out=gJSON(txt);GCFG.used=m;return out}catch(e){throw gErr("format","A IA devolveu um formato inesperado. Tente de novo.")}
+  }
+  throw gErr("limit",last===429?"Limite gratuito do Gemini atingido (por minuto ou por dia) em todos os modelos testados. Aguarde alguns minutos ou tente amanhã, ou use o modelo simples offline.":"Os modelos gratuitos não responderam agora (erro "+last+"). Tente de novo em instantes.");
+}
+function gStatus(){
+  const on=!!(GCFG.key||GCFG.proxy);SAMPLE=on?{json:p=>gemini(p)}:null;
+  const t=$("#gStatus");if(t)t.textContent=on?`IA ativa: ${GCFG.model} ${GCFG.proxy?"(via proxy próprio)":GCFG.save?"(chave salva neste aparelho)":"(chave só nesta sessão)"}.`:"IA desativada: nenhuma chave configurada. O restante do aplicativo funciona normalmente.";
+  iaNote();
+}
+function iaNote(){const n=$("#iaNote"),b=$("#bIA");if(!n)return;b.disabled=!SAMPLE;
+  n.innerHTML=SAMPLE?"IA: Google Gemini ("+esc(GCFG.model)+"), pela sua chave gratuita. O texto digitado é enviado ao Google; no nível gratuito o Google pode usá-lo para melhorar seus produtos, então não digite dados pessoais de estudantes. Revise sempre o resultado.":'IA desativada: configure sua chave gratuita do Gemini. Sem ela, use “Gerar sem IA” (funciona offline). <button type="button" class="btn alt" data-go="config" style="min-height:36px;padding:4px 12px">Configurar Gemini</button>'}
+function gSalvar(){
+  const k=$("#gkey").value.trim(),save=$("#gsave").checked;if(k)GCFG.key=k;GCFG.save=save;GCFG.model=$("#gmodel").value;GCFG.proxy=$("#gproxy").value.trim();
+  try{localStorage.setItem(GK,JSON.stringify({model:GCFG.model,proxy:GCFG.proxy,save,key:save?GCFG.key:""}))}catch(e){}
+  try{if(GCFG.key&&!save)sessionStorage.setItem(GK+"_k",GCFG.key);else sessionStorage.removeItem(GK+"_k")}catch(e){}
+  $("#gkey").value="";gStatus();$("#gMsg").textContent="Configuração salva.";toast("Configuração salva")}
+function gRemover(){GCFG.key="";GCFG.save=false;try{localStorage.removeItem(GK);sessionStorage.removeItem(GK+"_k")}catch(e){}$("#gkey").value="";gStatus();$("#gMsg").textContent="Chave removida deste aparelho."}
+async function gTestar(){const m=$("#gMsg");gSalvar();if(!SAMPLE){m.textContent="Cole uma chave ou informe um proxy primeiro.";return}
+  m.textContent="Testando com uma chamada real ao Gemini…";
+  try{await gemini('Responda somente com o JSON {"ok":true}');m.textContent="Conexão funcionando (modelo usado: "+GCFG.used+")."}catch(e){m.textContent=e.gmsg||"Falha no teste."}}
+document.addEventListener("click",e=>{if(e.target.id==="gSave")gSalvar();if(e.target.id==="gTest")gTestar();if(e.target.id==="gDel")gRemover()});
+$("#gmodel").innerHTML=MODELS.map(m=>`<option value="${m}">${m}${m===MODELS[0]?" (padrão)":""}</option>`).join("");$("#gmodel").value=GCFG.model;$("#gproxy").value=GCFG.proxy;$("#gsave").checked=GCFG.save;
+gStatus();
+const CH=["Dificuldade de leitura","Dispersão da atenção","Ruído na sala","Dificuldade motora para escrever","Comunicação oral limitada","Baixa visão","Ansiedade ou frustração"];
+$("#chips").innerHTML=CH.map(c=>`<button type="button" class="btn alt" data-chip="${c}" style="min-height:40px;padding:6px 12px;font-weight:400;font-size:.9rem;margin:0 6px 6px 0">${c}</button>`).join("");
+document.addEventListener("click",e=>{
+  const c=e.target.closest("[data-chip]");if(c){const t=$("#barr");t.value=(t.value.trim()?t.value.trim().replace(/[.;]$/,"")+"; ":"")+c.dataset.chip.toLowerCase()+"."}
+  const r=e.target.closest("[data-ref]");if(r)gerarIA(r.dataset.ref);
+});
+function promptIA(d,extra){return `Você é um assistente de apoio ao planejamento pedagógico inclusivo para professores brasileiros. Responda em português do Brasil.
+Dados da aula (fictícios, sem dados pessoais): ano: ${d.ano}; disciplina: ${d.disc}; conteúdo: ${d.cont}; objetivo: ${d.obj}; tempo: ${d.t} minutos; barreiras observadas: ${d.barr||"(não informadas)"}; recursos: ${d.rec||"(materiais simples de sala de aula)"}.
+Regras: não presuma necessidades a partir de diagnóstico; foque em barreiras e em várias formas de participação; faça uma atividade realista para o tempo e os recursos; escreva de forma concreta, com o texto das questões, exemplos e instruções prontos para usar; não invente citações, leis ou referências; não atribua estratégias a autores nem à legislação; não faça diagnóstico nem sugira que a atividade substitui a avaliação do professor; no campo motivos, explique em 3 a 5 frases curtas por que cada adaptação ajuda a reduzir barreiras; não use nomes de estudantes.${extra?`\nAjuste pedido pelo professor: ${extra}. Atividade anterior para ajustar: ${JSON.stringify(ultima)}`:""}
+Devolva SOMENTE JSON, sem texto extra, neste formato: {"titulo":"","objetivo":"","materiais":[""],"passos":[""],"questoes":[""],"participacao":[""],"acessibilidade":[""],"avaliacao":[""],"motivos":[""]}`}
+async function gerarIA(extra){
+  const f=$("#fAtv");if(!f.reportValidity())return;
+  const v=id=>$("#"+id).value.trim();
+  const d={ano:v("ano"),disc:v("disc"),cont:v("cont"),obj:v("obj")||"(sugira um objetivo adequado)",t:Math.max(10,parseInt(v("tempo"))||50),barr:v("barr"),rec:v("rec")};
+  $("#bIA").disabled=true;
+  $("#resAtv").innerHTML=`<div class="card" aria-busy="true"><p>Gerando a atividade com IA… leva alguns segundos.</p></div>`;
+  try{
+    const r=await SAMPLE.json(promptIA(d,extra),{cache:false});
+    if(!r||!Array.isArray(r.passos))throw new Error("formato");
+    ultima=r;
+    const li=a=>(Array.isArray(a)?a:[]).map(x=>`<li>${esc(x)}</li>`).join("");
+    $("#resAtv").innerHTML=`<article class="card" id="folha">
+     <p><span class="tag t-ped">Gerada por IA</span><span class="tag t-conf">Revise antes de usar</span></p>
+     <h3>${esc(r.titulo||d.cont)}</h3><p>${esc(d.disc)} · ${esc(d.ano)} · ${d.t} minutos</p>
+     <div class="sec"><h3>1. Título e objetivo</h3><p><strong>Atividade:</strong> ${esc(r.titulo||d.cont)}</p><p><strong>Objetivo:</strong> ${esc(r.objetivo||d.obj)}</p></div>
+     <div class="sec"><h3>2. Materiais necessários</h3><ul>${li(r.materiais)}</ul></div>
+     <div class="sec"><h3>3. Instruções passo a passo</h3><ol>${li(r.passos)}</ol></div>
+     <div class="sec"><h3>4. Questões ou etapas</h3><ol>${li(r.questoes)}</ol></div>
+     <div class="sec"><h3>5. Alternativas de participação</h3><ul>${li(r.participacao)}</ul></div>
+     <div class="sec"><h3>6. Acessibilidade e adaptação</h3><ul>${li(r.acessibilidade)}</ul></div>
+     <div class="sec"><h3>7. Orientações para avaliar a aprendizagem</h3><ul>${li(r.avaliacao)}</ul></div>
+     <div class="sec"><h3>Por que estas sugestões?</h3><ul>${li(r.motivos)}</ul><p class="hint">Justificativas geradas por IA. Não são recomendações de autores nem exigências legais, a menos que você confirme a fonte.</p></div>
+     <p class="hint" style="margin-top:14px">Gerada por IA a partir dos dados informados. Pode conter erros, não conhece seus estudantes, não é diagnóstico e não substitui a avaliação profissional do professor.</p>
+     <div class="noprint"><p><strong>Ajustar:</strong></p><div class="actions"><button class="btn alt" data-ref="deixe a atividade mais curta e objetiva" type="button">Mais curta</button><button class="btn alt" data-ref="simplifique a linguagem e as instruções" type="button">Mais simples</button><button class="btn alt" data-ref="torne a atividade mais lúdica, com jogo ou movimento" type="button">Mais lúdica</button><button class="btn alt" data-ref="crie uma versão diferente, com outra abordagem" type="button">Outra versão</button></div></div>
+     <div class="actions noprint"><button class="btn" id="pr1" type="button">Imprimir ou salvar em PDF</button><button class="btn alt" id="cp1" type="button">Copiar texto</button></div>
+    </article>`;
+    $("#folha").scrollIntoView({behavior:"smooth"});
+  }catch(err){
+    const c=err&&err.code;
+    $("#resAtv").innerHTML=`<div class="card"><p><strong>Não foi possível gerar com IA.</strong> ${err&&err.gmsg?esc(err.gmsg):c==="not_granted"?"A permissão não foi concedida. Toque em “Gerar com IA” de novo para permitir.":c==="rate_limited"?"Muitas solicitações seguidas. Aguarde um pouco e tente de novo.":"Tente novamente ou use o modelo simples."}</p></div>`;
+  }finally{$("#bIA").disabled=false}
+}
+$("#fAtv").addEventListener("submit",e=>{e.preventDefault();SAMPLE?gerarIA():gerar()});
+$("#bLocal").addEventListener("click",()=>{if($("#fAtv").reportValidity())gerar()});
+$("#ex1").addEventListener("click",()=>{
+  $("#ano").value="3º ano do Ensino Fundamental";$("#disc").value="Língua Portuguesa";$("#cont").value="Leitura de rótulos e embalagens";
+  $("#tempo").value=50;$("#obj").value="Identificar informações em rótulos e relacioná-las a situações do cotidiano.";
+  $("#barr").value="Dificuldade com textos longos; dispersão em tarefas extensas; ruído na sala.";
+  $("#rec").value="lousa, papel, canetas coloridas, embalagens recicláveis, cartões de papel";toast("Exemplo fictício preenchido")});
+document.addEventListener("click",e=>{
+  if(e.target.id==="pr1"||e.target.id==="printDia")imprimir();
+  if(e.target.id==="cp1"){const t=$("#folha").innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Texto copiado")).catch(()=>toast("Não foi possível copiar. Selecione o texto manualmente."))}
+});
+
+/* ---------- Fundamentação ---------- */
+const ST={ok:["t-ped","Verificada em fonte"],conf:["t-conf","Confirmar"],sem:["t-conf","Sem fonte verificada"]};
+const PLAN="https://www.planalto.gov.br/ccivil_03/leis/L9394compilado.htm";
+const FUND=[
+ {s:"Ajustar currículo, métodos, técnicas e recursos às necessidades dos estudantes",tipo:"lei",
+  lei:"O art. 59, caput e inciso I, da LDB determina que os sistemas de ensino assegurem, aos educandos com deficiência, transtornos globais do desenvolvimento e altas habilidades ou superdotação, currículos, métodos, técnicas, recursos educativos e organização específicos para atender às suas necessidades. O dever é dos sistemas de ensino, não do professor isoladamente nem deste aplicativo.",
+  int:"O aplicativo usa essa previsão como um dos motivos para sugerir adaptações. Como adaptar uma aula é decisão pedagógica do professor e da escola; a lei não prescreve as estratégias sugeridas aqui.",
+  refs:[{t:"BRASIL. Lei nº 9.394/1996 (LDB), art. 59, caput e inciso I.",u:PLAN,st:"ok",n:"Conferido em cópia do texto compilado de 20/01/2022 (hospedada em portal do IFF). Confirme no Planalto se houve alteração posterior."}]},
+ {s:"Educação especial na escola comum, com apoio especializado",tipo:"lei",
+  lei:"O art. 58 define educação especial como modalidade de educação escolar oferecida preferencialmente na rede regular de ensino, para educandos com deficiência, transtornos globais do desenvolvimento e altas habilidades ou superdotação. O § 1º prevê serviços de apoio especializado na escola regular, quando necessário. O § 2º prevê atendimento em classes, escolas ou serviços especializados quando, em função das condições específicas dos alunos, não for possível a integração nas classes comuns. O § 3º trata da oferta desde a educação infantil, ao longo da vida. O art. 4º, III, trata do atendimento educacional especializado gratuito, preferencialmente na rede regular.",
+  int:"O aplicativo apoia o planejamento para a turma comum. Isso não elimina as demais formas de atendimento previstas no § 2º, e o aplicativo não avalia quem tem direito a elas. Como conciliar o § 2º com a perspectiva inclusiva exige fonte específica, que não foi verificada neste protótipo.",
+  refs:[{t:"BRASIL. Lei nº 9.394/1996 (LDB), art. 58, caput e §§ 1º a 3º; art. 4º, III.",u:PLAN,st:"ok",n:"Mesma cópia do compilado (jan/2022). O § 3º consta com redação da Lei 13.632/2018 em base consultada em 2026. Confirme o texto vigente."}]},
+ {s:"Reconhecer e remover barreiras à participação e à aprendizagem",tipo:"ped",
+  lei:"A Lei Brasileira de Inclusão (Lei 13.146/2015), art. 3º, IV, define barreira como qualquer entrave, obstáculo, atitude ou comportamento que limite ou impeça a participação social da pessoa e o exercício de seus direitos. Leia o inciso completo na fonte.",
+  int:"A LBI trata de pessoas com deficiência. Aplicar a ideia de barreiras ao planejamento para toda a turma é interpretação pedagógica do protótipo, e não texto da lei.",
+  refs:[{t:"BRASIL. Lei nº 13.146/2015 (LBI), art. 3º, IV.",u:"https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm",st:"conf",n:"Inciso IV localizado em textos de 2015 e de 2023. A lei foi alterada em 2023 e 2025: confirme a numeração atual."}]},
+ {s:"Pensar a escola para todos, em vez de ajustar o estudante",tipo:"ped",
+  lei:"",
+  int:"Referência teórica de apoio: o sumário de “Inclusão escolar: o que é? Por quê? Como fazer?” traz seções como “Integração ou inclusão?”, “A questão da identidade versus diferença” e “Como fazer a inclusão escolar” (edição Summus) e “Recriar o modelo educativo” (edição Moderna). Isso indica que a obra trata de transformar a escola. Não foi verificado se a obra recomenda as estratégias específicas deste aplicativo, como caminhos alternativos de participação, e por isso elas não são atribuídas à autora. Fontes secundárias associam à autora críticas a um ensino à parte para alguns estudantes; o uso do termo “adaptação” no aplicativo deve ser lido à luz da obra, que precisa ser consultada.",
+  refs:[{t:"MANTOAN, Maria Teresa Eglér. Inclusão escolar: o que é? Por quê? Como fazer? 1. ed. São Paulo: Moderna, 2003. (Coleção Cotidiano Escolar). ISBN 85-16-03903-X.",st:"ok",n:"Dados da ficha catalográfica da edição Moderna."},
+        {t:"MANTOAN, Maria Teresa Eglér. Inclusão escolar: o que é? Por quê? Como fazer? São Paulo: Summus Editorial.",u:"https://www.gruposummus.com.br/wp-content/uploads/primeiras-paginas/10999.pdf",st:"conf",n:"A ficha indica copyright 2004 e 2015. Confirme número da edição e ano. Páginas e seções diferem entre as edições: não misture dados de uma com a outra."}]},
+ {s:"Avaliar o processo e registrar o que foi observado",tipo:"lei",
+  lei:"A LDB, art. 24, V, “a”, prevê para o ensino fundamental e o médio avaliação contínua e cumulativa do desempenho, com prevalência dos aspectos qualitativos sobre os quantitativos. Na educação infantil, o art. 31, I, prevê avaliação por acompanhamento e registro do desenvolvimento, sem objetivo de promoção.",
+  int:"As orientações de avaliação e o diário reflexivo são coerentes com essas previsões. Os modelos de registro sugeridos são escolha pedagógica do protótipo.",
+  refs:[{t:"BRASIL. Lei nº 9.394/1996 (LDB), art. 24, V, “a”; art. 31, I.",u:PLAN,st:"ok",n:"Conferido na cópia do compilado (jan/2022). Confirme o texto vigente."}]},
+ {s:"Não presumir necessidades iguais para o mesmo diagnóstico",tipo:"ped",
+  lei:"",
+  int:"O aplicativo pede a descrição de barreiras observadas, não de rótulos, e recomenda conversar com o estudante, a família e a equipe de apoio. É uma escolha de cuidado do protótipo; nenhuma fonte foi verificada para ela.",
+  refs:[{t:"Nenhuma referência verificada.",st:"sem",n:"Confirme uma fonte antes de usar esta afirmação em trabalho acadêmico."}]}
+];
+$("#fundList").innerHTML=FUND.map(f=>`<article class="card fund ${f.tipo==="lei"?"lei":""}">
+ <p><span class="tag ${f.tipo==="lei"?"t-lei":"t-ped"}">${f.tipo==="lei"?"Há previsão legal":"Recomendação pedagógica"}</span></p>
+ <h3>${f.s}</h3>
+ <p><strong>O que a lei determina:</strong> ${f.lei||"nada específico foi verificado para esta sugestão."}</p>
+ <p><strong>Interpretação do aplicativo:</strong> ${f.int}</p>
+ <p><strong>Referências:</strong></p>
+ <ul>${f.refs.map(r=>`<li>${r.t}${r.u?` <a href="${r.u}" target="_blank" rel="noopener">Consultar</a>`:""} <span class="tag ${ST[r.st][0]}">${ST[r.st][1]}</span> <span class="hint">${r.n}</span></li>`).join("")}</ul></article>`).join("")+`
+<article class="card"><h3>Transparência da revisão (22/10/2026)</h3>
+ <p><strong>Verificado em fonte consultada:</strong> texto dos arts. 4º, III, 24, V, “a”, 31, I, 58 e 59 da LDB, em cópia do compilado do Planalto de 20/01/2022; art. 3º, IV, da Lei 13.146/2015, em textos de 2015 e 2023; dados da edição Moderna 2003 (ficha catalográfica); existência da edição Summus.</p>
+ <p><strong>Precisa de conferência:</strong> texto vigente da LDB e da LBI no Planalto (ambas receberam alterações recentes); edição e ano da Summus; qualquer ideia atribuída a Mantoan, que depende da leitura da obra; paginação.</p>
+ <p><strong>Corrigido nesta revisão:</strong> removida a atribuição à autora da estratégia de caminhos alternativos de participação; art. 59 passou a indicar o público e o dever dos sistemas de ensino; incluído o § 2º do art. 58; separados “o que a lei determina” e “interpretação do aplicativo”; aviso inicial atualizado, pois o aplicativo agora usa IA; atividades passaram a trazer o motivo pedagógico das sugestões.</p></article>`;
+
+/* ---------- Recursos visuais ---------- */
+/* Ponto de integração futura. Hoje NÃO gera imagens. */
+async function gerarImagemComIA(/* descricao */){throw new Error("API de imagens não integrada")}
+function planejarVis(){
+  const tipo=$("#vtipo").value,tema=esc($("#vtema").value.trim()),barr=esc($("#vbarr").value.trim());
+  let itens=$("#vitens").value.split(",").map(s=>s.trim()).filter(Boolean);
+  if(!itens.length)itens=["Item 1","Item 2","Item 3"];
+  const par=tipo==="Jogo de associação";
+  const cards=itens.map((it,i)=>{const n=esc(it);return `<div class="card" style="margin:0"><h3>${i+1}. ${n}</h3>
+   <div class="ph">Espaço para imagem de “${n}”<br>(desenho, colagem ou imagem licenciada)</div>
+   <p><strong>Descrição sugerida:</strong> imagem simples e centralizada de “${n}”, fundo liso, contraste alto, sem texto dentro da figura.</p>
+   <p><strong>Texto alternativo:</strong> ${n}, no tema ${tema}.</p>${par?`<p><strong>Par:</strong> palavra “${n}” escrita em cartão separado.</p>`:""}</div>`}).join("");
+  const prompt=`Imagem educativa simples para o tema "${$("#vtema").value.trim()}". Itens: ${itens.join("; ")}. Estilo: traço limpo, cores contrastantes, fundo liso, um objeto por imagem, sem texto na imagem.`;
+  $("#resVis").innerHTML=`<article class="card" id="fichaVis"><h3>${esc(tipo)}: ${tema}</h3>
+   ${barr?`<p><strong>Barreira que busca reduzir:</strong> ${barr}</p>`:""}
+   <div class="cards">${cards}</div>
+   <div class="sec"><h3>Boas práticas de acessibilidade</h3><ul><li>Uma ideia por cartão e muito espaço em branco.</li><li>Alto contraste entre figura e fundo; não depender só da cor para diferenciar itens.</li><li>Letra grande e sem serifa; versão em relevo ou com objetos reais quando possível.</li><li>Conferir direitos de uso de qualquer imagem da internet.</li></ul></div>
+   <div class="sec"><h3>Texto preparado para uma futura API de imagens</h3><pre>${esc(prompt)}</pre>
+   <p class="hint">Este texto apenas está pronto para ser enviado quando houver uma integração. Nada foi enviado nem gerado.</p>
+   <div class="actions noprint"><button class="btn" type="button" disabled>Gerar imagens (requer integração)</button><button class="btn alt" id="pr2" type="button">Imprimir ficha</button></div></div></article>`;
+  $("#fichaVis").scrollIntoView({behavior:"smooth"});
+}
+$("#fVis").addEventListener("submit",e=>{e.preventDefault();planejarVis()});
+$("#ex2").addEventListener("click",()=>{$("#vtipo").value="Sequência visual";$("#vtema").value="Rotina da escola";$("#vitens").value="chegada, lanche, leitura, recreio, saída";$("#vbarr").value="Dificuldade de acompanhar instruções apenas faladas";toast("Exemplo fictício preenchido")});
+document.addEventListener("click",e=>{if(e.target.id==="pr2")imprimir()});
+
+/* ---------- Diário ---------- */
+let reg=[];
+try{reg=JSON.parse(localStorage.getItem("planejainclusao_diario")||"[]")||[]}catch(e){reg=[]}
+function salvarLocal(){try{localStorage.setItem("planejainclusao_diario",JSON.stringify(reg))}catch(e){}}
+function listarDia(){
+  const L=[["Barreira observada","b"],["Estratégia utilizada","s"],["Participação dos estudantes","p"],["O que funcionou","f"],["O que precisa ser revisto","r"]];
+  $("#diaList").innerHTML=reg.length?reg.map((r,i)=>`<article class="card"><h3>Registro de ${esc(r.data)}</h3>${L.map(([n,k])=>`<p><strong>${n}:</strong> ${esc(r[k]||"(não preenchido)")}</p>`).join("")}<div class="actions noprint"><button class="btn alt" data-del="${i}" type="button">Apagar registro</button></div></article>`).join(""):`<p class="empty">Nenhum registro ainda.</p>`;
+}
+$("#fDia").addEventListener("submit",e=>{e.preventDefault();
+  reg.unshift({data:new Date().toLocaleDateString("pt-BR"),b:$("#d1").value,s:$("#d2").value,p:$("#d3").value,f:$("#d4").value,r:$("#d5").value});
+  salvarLocal();listarDia();e.target.reset();toast("Registro salvo")});
+document.addEventListener("click",e=>{const d=e.target.closest("[data-del]");if(d){reg.splice(+d.dataset.del,1);salvarLocal();listarDia()}});
+listarDia();
+/* ---------- Biblioteca de folhas ilustradas (ilustrações SVG originais, sem IA de imagem) ---------- */
+const IC={
+casa:'<rect x="22" y="48" width="56" height="38" fill="#f4d9a8"/><path d="M14 50L50 18L86 50Z" fill="#d9776b"/><rect x="44" y="62" width="14" height="24" fill="#8a6a4f"/>',
+arvore:'<rect x="44" y="55" width="12" height="32" fill="#8a6a4f"/><circle cx="50" cy="38" r="26" fill="#6cb67f"/>',
+sol:'<circle cx="50" cy="50" r="18" fill="#f6c945"/><path d="M50 12v14M50 74v14M12 50h14M74 50h14M23 23l10 10M67 67l10 10M77 23L67 33M33 67L23 77" stroke="#f6c945" stroke-width="5"/>',
+gato:'<path d="M22 18L40 36H22ZM78 18L60 36H78Z" fill="#e0a458"/><circle cx="50" cy="55" r="30" fill="#e0a458"/><circle cx="40" cy="50" r="4" fill="#333"/><circle cx="60" cy="50" r="4" fill="#333"/><path d="M46 62h8l-4 5z" fill="#d9776b"/><path d="M20 58h16M20 66l16-4M80 58H64M80 66L64 62" stroke="#333" stroke-width="2"/>',
+peixe:'<ellipse cx="44" cy="50" rx="30" ry="18" fill="#5fa8d3"/><path d="M70 50L92 34V66Z" fill="#5fa8d3"/><circle cx="32" cy="45" r="3.5" fill="#fff" stroke="#333"/>',
+maca:'<circle cx="50" cy="57" r="29" fill="#d95f5f"/><path d="M50 28q2-12 12-14" stroke="#6b4a2f" stroke-width="4" fill="none"/><path d="M52 24q14-10 24 0q-12 10-24 0Z" fill="#6cb67f"/>',
+livro:'<path d="M12 28h36v52H12ZM52 28h36v52H52Z" fill="#8fb8e8" stroke="#333" stroke-width="2"/><path d="M20 40h20M20 50h20M60 40h20M60 50h20" stroke="#fff" stroke-width="3"/>',
+bola:'<circle cx="50" cy="50" r="32" fill="#f4f4f4" stroke="#333" stroke-width="3"/><path d="M50 36l13 10-5 15H42l-5-15Z" fill="#333"/>',
+flor:'<path d="M50 58V90" stroke="#4f9a5f" stroke-width="5"/><g fill="#e98fb0"><circle cx="50" cy="26" r="12"/><circle cx="50" cy="52" r="12"/><circle cx="37" cy="39" r="12"/><circle cx="63" cy="39" r="12"/></g><circle cx="50" cy="39" r="9" fill="#f6c945"/>',
+gota:'<path d="M50 12C70 40 76 52 76 62a26 26 0 0 1-52 0C24 52 30 40 50 12Z" fill="#5fa8d3"/>',
+lua:'<path d="M62 14a38 38 0 1 0 0 72a30 30 0 0 1 0-72Z" fill="#f6dc7a"/>',
+estrela:'<path d="M50 12l11 25 27 3-20 18 6 27-24-14-24 14 6-27L12 40l27-3Z" fill="#f6c945"/>',
+montanha:'<path d="M6 84L40 28L60 60L72 44L94 84Z" fill="#8fa3b5"/><path d="M40 28l8 14h-16Z" fill="#fff"/>',
+rio:'<path d="M10 40q20 10 40 0t40 0v22q-20 10-40 0t-40 0Z" fill="#5fa8d3"/>',
+bussola:'<circle cx="50" cy="50" r="36" fill="#fff" stroke="#333" stroke-width="4"/><path d="M50 20l8 30h-16Z" fill="#d95f5f"/><path d="M50 80l-8-30h16Z" fill="#5f7fd9"/><circle cx="50" cy="50" r="4" fill="#333"/>',
+barco:'<path d="M12 62h76l-12 20H24Z" fill="#8a6a4f"/><path d="M50 14v46" stroke="#333" stroke-width="3"/><path d="M52 16l28 38H52Z" fill="#f4efe1" stroke="#333" stroke-width="2"/><path d="M48 24L26 54h22Z" fill="#f4efe1" stroke="#333" stroke-width="2"/>',
+planta:'<path d="M30 66h40l-6 22H36Z" fill="#c98a5b"/><path d="M50 66V34" stroke="#4f9a5f" stroke-width="5"/><path d="M50 50q-24 0-24-22q22 0 24 22ZM50 42q22 0 22-20q-20 0-22 20Z" fill="#6cb67f"/>',
+onibus:'<rect x="10" y="30" width="80" height="42" rx="6" fill="#f6c945"/><g fill="#cfe8ff"><rect x="16" y="37" width="16" height="14"/><rect x="38" y="37" width="16" height="14"/><rect x="60" y="37" width="16" height="14"/></g><circle cx="28" cy="74" r="8" fill="#333"/><circle cx="72" cy="74" r="8" fill="#333"/>',
+aviao:'<ellipse cx="50" cy="50" rx="40" ry="9" fill="#cfd9e6" stroke="#333" stroke-width="3"/><path d="M44 50L28 22h12l22 28ZM44 50L28 78h12l22-28Z" fill="#8fa3b5"/>',
+nuvem:'<g fill="#cfd9e6"><circle cx="34" cy="55" r="18"/><circle cx="54" cy="45" r="22"/><circle cx="72" cy="58" r="15"/><rect x="26" y="58" width="56" height="15"/></g>',
+oca:'<path d="M50 14L88 86H12Z" fill="#d9a066"/><path d="M50 50L62 86H38Z" fill="#6b4a2f"/>',
+mapa:'<path d="M10 24l26-8l28 10l26-8v58l-26 8l-28-10l-26 8Z" fill="#cfe8c2" stroke="#333" stroke-width="3"/><path d="M36 16v58M64 26v58" stroke="#333" stroke-width="2"/><path d="M52 44l10 10M62 44L52 54" stroke="#d95f5f" stroke-width="4"/>',
+coracao:'<path d="M50 84C14 58 16 26 36 24c8 0 14 5 14 12c0-7 6-12 14-12c20 2 22 34-14 60Z" fill="#d95f5f"/>',
+olho:'<path d="M8 50Q50 12 92 50Q50 88 8 50Z" fill="#fff" stroke="#333" stroke-width="4"/><circle cx="50" cy="50" r="15" fill="#5f7fd9"/><circle cx="50" cy="50" r="6" fill="#222"/>'
+};
+const svg=(k,s=60)=>IC[k]?`<svg viewBox="0 0 100 100" width="${s}" height="${s}" role="img" aria-label="${k}">${IC[k]}</svg>`:"";
+const gap=w=>w.replace(/_/g,'<i class="gap"></i>');
+const fr=(a,b)=>`<span class="fr"><b>${a}</b><b>${b}</b></span>`;
+const rot=(a,k)=>a.map((_,i)=>a[(i+k)%a.length]);
+const cut=(a,o)=>o.menos?a.slice(0,Math.max(3,Math.ceil(a.length*.6))):a;
+const ex=(o,h)=>o.exemplo?`<p class="exm">${h}</p>`:"";
+const lines=(n,o)=>o.oral?`<div class="oral">Resposta oral &nbsp; ☐ completa &nbsp; ☐ com apoio</div>`:Array(n).fill('<div class="ln"></div>').join("");
+const L=i=>String.fromCharCode(65+i);
+const B={
+assoc:(b,o)=>{const it=cut(b[2],o),w=rot(it.map(x=>x[1]),it.length>2?2:1);
+ return [ex(o,`Exemplo: ${svg(it[0][0],32)} liga com <b>${it[0][1]}</b>.`)+`<div class="assoc">${it.map((x,i)=>`<div class="fig">${svg(x[0],58)}<i class="dot"></i></div><div class="wd"><i class="dot"></i>${w[i]}</div>`).join("")}</div>`,it.map(x=>x[1]).join(", ")]},
+comp:(b,o)=>{const it=cut(b[2],o);
+ return [ex(o,`Exemplo: ${svg(it[0][0],32)} <b>${it[0][1].replace("_",`<u>${it[0][2]}</u>`)}</b>`)+`<div class="comp">${it.map(x=>`<div class="ci">${svg(x[0],54)}<span class="w">${gap(x[1])}</span><small>${(x[3]||"").split("").join(" · ")}</small></div>`).join("")}</div>`,it.map(x=>x[1].replace("_",x[2])).join(", ")]},
+txt:(b,o)=>{const qs=b[5]||[];
+ return [`<div class="tx"><div class="ti">${(b[4]||[]).map(k=>svg(k,66)).join("")}</div><h4>${b[2]}</h4>${String(b[3]).split("|").map(p=>`<p>${p}</p>`).join("")}</div>`+qs.map((q,j)=>`<div class="q"><p><b>${L(j)})</b> ${q[0]}</p>${q[1]?q[1].map(x=>`<div class="op"><i></i>${x}</div>`).join(""):lines(2,o)}</div>`).join(""),qs.map((q,j)=>`${L(j)}) ${q[1]?q[1][q[2]]:q[2]}`).join(" · ")]},
+seq:(b,o)=>{const it=b[2],N=it.length,P=N===3?[1,2,0]:N===4?[2,0,3,1]:[...it.keys()].reverse();
+ return [`<div class="seq">${P.map(i=>`<div class="sc">${svg(it[i][0],72)}<p>${it[i][1]}</p><i class="nb"></i></div>`).join("")}</div>`,P.map((i,p)=>`cena ${p+1}: nº ${i+1}`).join(" · ")]},
+mult:(b)=>{const [,,k,g,p]=b;return [`<div class="grp">${Array(g).fill(`<div class="gb">${Array(p).fill(svg(k,32)).join("")}</div>`).join("")}</div><p class="eq">Conta: <u></u> × <u></u> = <u></u> &nbsp; Resposta: <u></u></p>`,`${g} × ${p} = ${g*p}`]},
+div:(b)=>{const [,,k,t,g]=b;return [`<div class="tot">${Array(t).fill(svg(k,32)).join("")}</div><div class="grp">${Array(g).fill('<div class="gb empty"></div>').join("")}</div><p class="eq">Conta: <u></u> ÷ <u></u> = <u></u> &nbsp; Resposta: <u></u></p>`,`${t} ÷ ${g} = ${t/g}`]},
+frac:(b)=>[b[2].map(([n,k,m])=>`<div class="fq"><svg viewBox="0 0 240 44" width="240" height="44">${[...Array(n).keys()].map(i=>`<rect x="${i*240/n+1}" y="2" width="${240/n-2}" height="40" fill="${m==="escreva"&&i<k?"#8fc7a0":"#fff"}" stroke="#333" stroke-width="2"/>`).join("")}</svg>${m==="pinte"?`<span>Pinte ${fr(k,n)} da barra.</span>`:`<span>Fração pintada: ${fr("&nbsp;&nbsp;&nbsp;","&nbsp;&nbsp;&nbsp;")}</span>`}</div>`).join(""),b[2].map(([n,k])=>`${k}/${n}`).join(" · ")],
+tab:(b)=>{const cell=x=>x==="o"?'<td class="c"><i class="ci2"></i></td>':x[0]==="@"?`<td>${svg(x.slice(1).split(" ")[0],38)} ${x.slice(1).split(" ").slice(1).join(" ")}</td>`:`<td>${x}</td>`;
+ return [`<table class="tb"><tr>${b[2].map(x=>`<th>${x}</th>`).join("")}</tr>${b[3].map(r=>`<tr>${r.map(cell).join("")}</tr>`).join("")}</table>`,b[4]||"Conferir com o conteúdo estudado."]},
+lac:(b)=>[`<div class="bank">Banco de palavras: ${b[2].map(w=>`<span>${w}</span>`).join("")}</div><div class="ti row">${(b[4]||[]).map(k=>svg(k,66)).join("")}</div>`+b[3].map(f=>`<p class="fl">${f.replace(/___/g,'<i class="gap w"></i>')}</p>`).join(""),b[5]||""],
+fr:(b,o)=>[b[2].map(x=>{const w=x[1].split(" ");return `<div class="fs">${svg(x[0],46)}<div><div class="chips">${rot(w,Math.ceil(w.length/2)).map(t=>`<span>${t}</span>`).join("")}</div>${lines(1,o)}</div></div>`}).join(""),b[2].map(x=>x[1]).join(" | ")],
+rosa:()=>[`<svg viewBox="0 0 260 230" width="300" class="rosa"><path d="M130 30V200M40 115H220" stroke="#333" stroke-width="3"/><g transform="translate(90 75) scale(.8)">${IC.bussola}</g>${[[130,18,"N"],[130,212,""],[232,115,""],[28,115,""]].map(([x,y,l])=>`<circle cx="${x}" cy="${y}" r="16" fill="#fff" stroke="#333" stroke-width="2"/><text x="${x}" y="${y+6}" text-anchor="middle" font-size="17" font-weight="700">${l}</text>`).join("")}</svg><p class="exm">Escolha: S (Sul) · L (Leste) · O (Oeste). O Sol nasce do lado Leste.</p>`,"Baixo: S · Direita: L · Esquerda: O"]
+};
+function folhaHTML(a,o){
+ const N=a.b.length,gab=[];
+ const body=a.b.map((b,i)=>{let r;try{r=B[b[0]](b,o)}catch(e){return ""}gab.push(r[1]);
+  return `<section class="bl"><div class="bh">${o.steps?`<span class="etp">Etapa ${i+1} de ${N}</span>`:`<span class="num">${i+1}</span>`}<p>${b[1]}</p>${o.steps?'<span class="ok">☐ Terminei</span>':""}</div>${r[0]}</section>`}).join("");
+ return `<article class="folha${o.fonte?" dys":""}${o.limpo?" clean":""}"><div class="cab"><span>Nome: <u></u></span><span>Turma: <u></u></span><span>Data: <u></u></span></div><div class="deco"></div><h1>${a.t}</h1><p class="sub">${a.d} · 4º ano</p><p class="ins">${o.steps?"Faça uma etapa de cada vez. Marque ☐ quando terminar.":"Leia cada comando e responda."}</p>${body}<p class="rod">${a.ia?"Folha composta por IA com as ilustrações da biblioteca. Revise antes de usar. ":""}Material do PlanejaInclusão · ilustrações vetoriais criadas para o aplicativo.</p></article><section class="gab"><h3>Gabarito do professor</h3><ol>${gab.map(g=>`<li>${g}</li>`).join("")}</ol></section>`}
+const ACT=[
+{i:"casa",d:"Língua Portuguesa",t:"Figuras e palavras",h:"Vocabulário, ortografia e frases",b:[
+["assoc","Ligue cada figura à palavra certa.",[["casa","casa"],["gato","gato"],["peixe","peixe"],["maca","maçã"],["livro","livro"],["bola","bola"]]],
+["comp","Complete a palavra com a letra que falta.",[["gato","g_to","a","aeo"],["bola","bo_a","l","lmn"],["flor","f_or","l","lpr"],["sol","s_l","o","oua"]]],
+["fr","Organize as palavras e escreva a frase.",[["gato","O gato dorme na casa"],["flor","A flor cresce no jardim"]]]]},
+{i:"livro",d:"Língua Portuguesa",t:"A biblioteca do bairro",h:"Compreensão de texto e vocabulário",b:[
+["txt","Leia o texto e responda.","A biblioteca do bairro","Todo sábado, Lia vai à biblioteca do bairro.|Ela escolhe um livro de aventuras e lê perto da janela.|Antes de sair, pede o livro emprestado e promete devolvê-lo em quinze dias.",["livro","casa"],[["Quando Lia vai à biblioteca?",["Todo sábado","Todo domingo","Todo dia"],0],["Que tipo de livro Lia escolhe?",["De receitas","De aventuras","De mapas"],1],["Por quanto tempo Lia pode ficar com o livro?",null,"Quinze dias."]]],
+["lac","Complete as frases com as palavras do banco.",["emprestado","biblioteca","aventuras"],["Lia foi à ___ do bairro.","O livro ficou ___ por quinze dias.","Ela gosta de livros de ___."],["livro"],"biblioteca; emprestado; aventuras"]]},
+{i:"arvore",d:"Língua Portuguesa",t:"Plantando uma árvore",h:"Sequência de acontecimentos e frases",b:[
+["seq","Numere as cenas de 1 a 4, na ordem em que acontecem.",[["planta","Plantamos a muda"],["gota","Regamos todos os dias"],["sol","A planta recebe luz do Sol"],["arvore","Ela cresce e vira árvore"]]],
+["fr","Organize as palavras e escreva a frase.",[["planta","A muda cresce com água"],["arvore","A árvore dá sombra"]]]]},
+{i:"estrela",d:"Língua Portuguesa",t:"Letras, sons e sílabas",h:"Ortografia, sílabas e palavras",b:[
+["comp","Complete a palavra com a letra que falta.",[["casa","ca_a","s","szc"],["bola","bo_a","l","lmn"],["flor","f_or","l","lpr"],["lua","l_a","u","uoa"],["sol","s_l","o","oua"],["estrela","es_rela","t","tdp"]]],
+["tab","Escreva o nome da figura e conte as sílabas.",["Figura","Palavra","Nº de sílabas"],[["@casa","",""],["@bola","",""],["@flor","",""]],"casa (2); bola (2); flor (1)"]]},
+{i:"maca",d:"Matemática",t:"Grupos iguais: multiplicação",h:"Multiplicação com desenhos",b:[
+["mult","Quantas maçãs há ao todo? Conte os grupos iguais.","maca",3,4],
+["mult","Quantas bolas há ao todo?","bola",5,3],
+["tab","Complete a tabela.",["Caixas","Peixes em cada caixa","Total"],[["2","6",""],["3","6",""],["4","6",""]],"12; 18; 24"]]},
+{i:"bola",d:"Matemática",t:"Repartir em partes iguais: divisão",h:"Divisão e problemas",b:[
+["div","Distribua as 12 maçãs igualmente em 4 cestas.","maca",12,4],
+["div","Distribua as 15 bolas igualmente em 3 caixas.","bola",15,3],
+["txt","Leia o problema e responda.","Repartindo flores","Marta tem 20 flores.|Ela quer montar 5 vasos com a mesma quantidade de flores.",["flor"],[["Quantas flores ficam em cada vaso?",["3","4","5"],1],["Escreva a conta que você usou.",null,"20 ÷ 5 = 4"]]]]},
+{i:"estrela",d:"Matemática",t:"Frações em partes iguais",h:"Representação de frações",b:[
+["frac","Pinte a fração indicada em cada barra.",[[4,3,"pinte"],[2,1,"pinte"],[8,5,"pinte"]]],
+["frac","Escreva a fração que está pintada.",[[8,3,"escreva"],[4,2,"escreva"]]],
+["txt","Leia e responda.","A barra de cereal","Uma barra de cereal foi dividida em 4 partes iguais.|Pedro comeu 1 parte.",["maca"],[["Que fração da barra Pedro comeu?",["1/4","1/2","4/1"],0],["Quantas partes sobraram?",null,"3 partes (3/4)."]]]]},
+{i:"livro",d:"Matemática",t:"Problemas com tabela",h:"Multiplicação em situações do dia a dia",b:[
+["tab","Complete a tabela multiplicando.",["Item","Caixas","Em cada caixa","Total"],[["@maca Maçãs","3","8",""],["@bola Bolas","4","5",""],["@flor Flores","5","6",""]],"24; 20; 30"],
+["txt","Leia o problema e responda.","Livros novos","A escola comprou 4 caixas.|Cada caixa tem 9 livros.",["livro"],[["Quantos livros foram comprados?",["13","36","32"],1],["Escreva a multiplicação.",null,"4 × 9 = 36"]]]]},
+{i:"gota",d:"Ciências",t:"O ciclo da água",h:"Evaporação, condensação e chuva",b:[
+["seq","Numere as etapas do ciclo da água de 1 a 3.",[["sol","O Sol aquece a água"],["nuvem","O vapor forma nuvens"],["gota","A água cai como chuva"]]],
+["lac","Complete as frases com as palavras do banco.",["evapora","nuvens","chuva","rio"],["O Sol aquece a água e ela ___.","O vapor sobe e forma as ___.","A água cai como ___.","A água volta para o ___ ou para o mar."],["sol","nuvem","gota","rio"],"evapora; nuvens; chuva; rio"]]},
+{i:"planta",d:"Ciências",t:"Plantas e seres vivos",h:"Seres vivos e partes da planta",b:[
+["tab","Marque se é ser vivo ou não vivo.",["Figura","Ser vivo","Não vivo"],[["@gato Gato","o","o"],["@arvore Árvore","o","o"],["@sol Sol","o","o"],["@gota Água","o","o"],["@peixe Peixe","o","o"],["@nuvem Nuvem","o","o"]],"Seres vivos: gato, árvore, peixe. Não vivos: Sol, água, nuvem."],
+["lac","Complete com as partes da planta.",["raiz","caule","folhas"],["A ___ fixa a planta no solo e absorve água.","O ___ sustenta a planta.","As ___ captam a luz do Sol."],["planta"],"raiz; caule; folhas"]]},
+{i:"peixe",d:"Ciências",t:"Quem come quem?",h:"Cadeia alimentar",b:[
+["seq","Numere a cadeia alimentar de 1 a 3, começando por quem produz o alimento.",[["planta","Planta aquática"],["peixe","O peixe come a planta"],["gato","O gato come o peixe"]]],
+["txt","Leia e responda.","Cadeia alimentar","Em uma cadeia alimentar, a energia passa de um ser vivo para outro.|A planta produz o próprio alimento com a luz do Sol.|Os animais precisam comer outros seres vivos.",["planta","peixe","gato"],[["Quem produz o próprio alimento?",["A planta","O peixe","O gato"],0],["Quem é o último da cadeia ilustrada?",null,"O gato."]]]]},
+{i:"barco",d:"História",t:"Transportes: do mais lento ao mais rápido",h:"Mudanças nos meios de transporte",b:[
+["seq","Numere do transporte mais lento (1) ao mais rápido (3).",[["barco","Barco à vela"],["onibus","Ônibus"],["aviao","Avião"]]],
+["txt","Leia e responda.","Viagens que mudaram","Com o passar do tempo, surgiram novos meios de transporte.|Viagens que levavam semanas passaram a levar poucas horas.",["onibus","aviao"],[["O que mudou nas viagens?",null,"Ficaram mais rápidas."],["Qual transporte você usa para ir à escola?",null,"Resposta pessoal."]]]]},
+{i:"oca",d:"História",t:"Moradias de ontem e de hoje",h:"Modos de morar em diferentes lugares",b:[
+["txt","Leia o texto e responda.","Cada lugar, um jeito de morar","As moradias mudam de acordo com o lugar, o clima e o modo de vida das pessoas.|Alguns povos indígenas constroem casas coletivas, como a oca. Cada povo tem seu jeito de construir.|Hoje, muitas pessoas moram em casas e prédios nas cidades.",["oca","casa"],[["Por que as moradias são diferentes?",["Por causa do lugar e do modo de vida","Porque todas são iguais","Porque ninguém escolhe"],0],["Pesquise: como é a moradia de um povo indígena da sua região?",null,"Resposta de pesquisa (adapte ao povo estudado)."]]],
+["tab","Compare as moradias. Escreva o que é parecido e o que é diferente.",["Moradia","Parecido","Diferente"],[["@oca Oca","",""],["@casa Casa","",""]],"Respostas pessoais."]]},
+{i:"bussola",d:"Geografia",t:"Pontos cardeais",h:"Orientação com a rosa dos ventos",b:[
+["rosa","Complete a rosa dos ventos. O Norte (N) já está marcado."],
+["txt","Leia e responda.","Onde o Sol nasce?","Os pontos cardeais ajudam a nos orientar.|De manhã, o Sol aparece do lado Leste. À tarde, ele desaparece do lado Oeste.|A bússola tem uma agulha que aponta para o Norte.",["sol","bussola"],[["De que lado o Sol aparece de manhã?",["Leste","Oeste","Sul"],0],["Qual instrumento ajuda a encontrar o Norte?",null,"A bússola."]]]]},
+{i:"mapa",d:"Geografia",t:"Paisagens e mapas",h:"Paisagem natural e construída; legenda",b:[
+["tab","Marque se a paisagem é natural ou construída.",["Figura","Natural","Construída"],[["@montanha Montanha","o","o"],["@rio Rio","o","o"],["@casa Casas","o","o"],["@arvore Árvore","o","o"]],"Natural: montanha, rio, árvore. Construída: casas."],
+["txt","Leia e responda.","Lendo um mapa","Um mapa representa um lugar visto de cima.|A legenda explica o que cada símbolo significa.|Os pontos cardeais mostram as direções.",["mapa","bussola"],[["Para que serve a legenda?",["Explicar os símbolos","Pintar o mapa","Medir o rio"],0],["Escreva ou desenhe um símbolo que você usaria para a escola.",null,"Resposta pessoal."]]]]}
+];
+const AP={steps:0,fonte:0,visual:1,limpo:0,exemplo:0,oral:0,menos:0};
+const AL={steps:"Instruções em etapas curtas",fonte:"Fonte legível e mais espaçamento",visual:"Apoios visuais nos textos",limpo:"Menos elementos na página",exemplo:"Exemplo resolvido",oral:"Responder oralmente (sem linhas)",menos:"Menos itens por exercício"};
+const PRE={nenhum:{visual:1},autismo:{steps:1,limpo:1,exemplo:1,visual:1},dislexia:{fonte:1,visual:1,exemplo:1,steps:1},ambos:{steps:1,limpo:1,exemplo:1,visual:1,fonte:1}};
+let cur=null;
+function ajusta(){const w=$("#folhaWrap"),f=w&&w.querySelector(".folha");if(f&&w.clientWidth)f.style.zoom=Math.min(1,w.clientWidth/794)}
+function pintar(){
+ $("#apBox").innerHTML=Object.keys(AL).map(k=>`<label><input type="checkbox" data-ap="${k}" ${AP[k]?"checked":""}> ${AL[k]}</label>`).join("")+`<label><input type="checkbox" id="gabOn"> Incluir gabarito do professor (impresso em página separada)</label>`;
+ $("#folhaWrap").innerHTML=folhaHTML(cur,AP);ajusta()}
+function abrir(a){cur=a;$("#libList").hidden=true;$("#libView").hidden=false;pintar();window.scrollTo(0,0)}
+function grade(){const d=$("#lfd").value;$("#libGrid").innerHTML=ACT.map((a,i)=>[a,i]).filter(x=>!d||x[0].d===d).map(([a,i])=>`<div class="card" style="margin:0"><div style="display:flex;gap:10px;align-items:center">${svg(a.i,52)}<div><h3 style="margin:0">${a.t}</h3><span class="tag t-ped">${a.d}</span></div></div><p class="hint">${a.h}</p><button class="btn" data-open="${i}" type="button">Abrir folha</button></div>`).join("")}
+function preset(){const p=PRE[$("#lpre").value];Object.keys(AP).forEach(k=>AP[k]=p[k]?1:0);AP.menos=$("#lniv").value==="menos"?1:0}
+function limpar(r){const e=x=>typeof x==="string"?esc(x):Array.isArray(x)?x.map(e):x;
+ const T=["assoc","comp","seq","fr"];
+ const b=(Array.isArray(r.b)?r.b:[]).map(e).filter(x=>Array.isArray(x)&&B[x[0]]).map(x=>{
+  if(T.includes(x[0]))x[2]=(Array.isArray(x[2])?x[2]:[]).filter(i=>Array.isArray(i)&&IC[i[0]]);
+  if(x[0]==="txt"||x[0]==="lac")x[4]=(Array.isArray(x[4])?x[4]:[]).filter(k=>IC[k]);
+  return x}).filter(x=>!T.includes(x[0])||x[2].length>=2);
+ return {t:e(r.t||"Atividade"),d:e(r.d||""),i:"estrela",b,ia:1}}
+document.addEventListener("click",e=>{
+ const o=e.target.closest("[data-open]");if(o){preset();abrir(ACT[+o.dataset.open])}
+ if(e.target.id==="back"){$("#libView").hidden=true;$("#libList").hidden=false}
+ if(e.target.id==="pr3")imprimir()});
+document.addEventListener("change",e=>{const k=e.target.dataset&&e.target.dataset.ap;if(k){AP[k]=e.target.checked?1:0;const g=$("#gabOn").checked;pintar();$("#gabOn").checked=g}
+ if(e.target.id==="gabOn")$("#libView").classList.toggle("pgab",e.target.checked);
+ if(e.target.id==="lfd")grade()});
+window.addEventListener("resize",ajusta);
+$("#fGen").addEventListener("submit",async e=>{e.preventDefault();const n=$("#genNote"),b=$("#bGen");
+ if(!SAMPLE){n.textContent="A IA não está disponível neste modo de visualização. Configure sua chave gratuita do Gemini em Configurações ou use as folhas prontas.";return}
+ const v=id=>$("#"+id).value.trim();preset();
+ const p=`Crie uma folha de atividade para o 4º ano do Ensino Fundamental (Brasil). Disciplina: ${v("gd")}. Conteúdo: ${v("gc")}. Tipo preferido: ${v("gt")}. Observações do professor (barreiras e habilidades, sem diagnóstico): ${v("go")||"nenhuma"}.
+Use SOMENTE estas ilustrações (ids): ${Object.keys(IC).join(",")}.
+Responda SOMENTE JSON: {"t":"título","d":"disciplina","b":[blocos]}. Cada bloco é um array; o 2º item é sempre o comando curto e direto. Formatos:
+["assoc",cmd,[[id,"palavra"],...4 a 6]]
+["comp",cmd,[[id,"pal_vra","letra","opções juntas"],...]]  (um "_" no lugar da letra)
+["txt",cmd,"Título","parágrafo|parágrafo|parágrafo",[ids],[["pergunta",["a","b","c"],índiceCorreto],["pergunta",null,"resposta esperada"]]]
+["seq",cmd,[[id,"legenda"],...3 ou 4, na ordem correta]]
+["mult",cmd,id,grupos,porGrupo]  ["div",cmd,id,total,grupos] (total divisível)
+["frac",cmd,[[partes,pintadas,"pinte"|"escreva"]]]
+["tab",cmd,["col",...],[["@id Rótulo","","o"]],"gabarito"]  ("o" = círculo de marcar; "" = espaço em branco)
+["lac",cmd,["banco"],["frase com ___"],[ids],"gabarito"]
+["fr",cmd,[[id,"frase completa"]]]
+["rosa",cmd]
+Use 3 a 5 blocos, conteúdo correto e adequado ao 4º ano, sem infantilizar, com textos em parágrafos curtos e frases diretas. Não use ids fora da lista, não invente citações e não faça diagnóstico.`;
+ b.disabled=true;n.textContent="Gerando a folha com IA… leva alguns segundos.";
+ try{const a=limpar(await SAMPLE.json(p,{cache:false}));if(a.b.length<2)throw new Error("curta");n.textContent="";abrir(a)}
+ catch(err){n.textContent=err&&err.gmsg?err.gmsg:"Não foi possível montar a folha. Tente de novo ou use uma folha pronta."}
+ finally{b.disabled=false}});
+grade();
+</script>
+</body>
+</html>
